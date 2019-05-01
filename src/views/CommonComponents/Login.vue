@@ -1,28 +1,36 @@
 <template>
   <div id="login">
     <div id="loginForm">
-      <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="60px">
+      <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="0px">
         <div style="margin-bottom:20px">
           <h2>Sign in</h2>
         </div>
         <el-row>
           <el-col>
-            <el-form-item label="用户" prop="username">
-              <el-input v-model="loginForm.username" prefix-icon="el-icon-search"></el-input>
+            <el-form-item prop="username">
+              <el-input v-model="loginForm.username">
+                <span slot="prefix"  style="font-size: large;">
+                  <i class=" fas fa-user-circle fa-fw"></i>
+                </span>
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="loginForm.password"></el-input>
+            <el-form-item prop="password">
+              <el-input v-model="loginForm.password" type="password">
+                <span slot="prefix"  style="font-size: large;">
+                  <i class=" fas fa-lock fa-fw"></i>
+                </span>
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
             <el-form-item>
-              <el-button @click="submitLogin('loginForm')" type="success" autofocus style="width: 95%;">登录</el-button>
+              <el-button :loading="loading" @click.native.prevent="submitLogin('loginForm')" type="success" autofocus style="width: 95%;">登录</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -35,25 +43,32 @@
 export default {
   name: 'Login',
   data () {
-    /* const usernameValidator = (valid, value, callback) => {
-
+    const usernameValidator = (valid, value, callback) => {
+      if (value.length === 0) {
+        callback(new Error('请输入用户名'))
+      } else {
+        callback()
+      }
     }
     const passwordValidator = (valid, value, callback) => {
-
-    } */
+      if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
+      } else {
+        callback()
+      }
+    }
     return {
+      loading: false,
       loginForm: {
         username: '',
         password: ''
       },
       rules: {
         username: [
-          // { required: true, trigger: 'blur', validator: usernameValidator }
-          { required: true, message: '必填', trigger: 'blur' }
+          { required: true, trigger: 'blur', validator: usernameValidator }
         ],
         password: [
-          // { required: true, trigger: 'blur', validator: passwordValidator }
-          { required: true, message: '必填', trigger: 'blur' }
+          { required: true, trigger: 'blur', validator: passwordValidator }
         ]
       }
     }
@@ -62,35 +77,15 @@ export default {
     submitLogin (formname) {
       this.$refs[formname].validate((valid) => {
         if (valid) {
-          this.$router.push({path: '/helloworld'})
-          /* this.$axios.get('/api/District', { // params参数必写 , 如果没有参数传{}也可以
-            params: {
-              id: 12345,
-              name: 'user'
-            }
+          debugger
+          this.loading = true
+          this.$store.dispatch('userLogin', this.loginForm).then(() => {
+            this.loading = false
+            this.$router.push({ path: '/' })
+          }).catch(error => {
+            this.loading = false
+            this.$message.error(error + '111')
           })
-            .then(function (res) {
-              console.log(res)
-            })
-            .catch(function (err) {
-              console.log(err)
-            }) */
-          /* this.$axios({
-            url: '/api/District',
-            method: 'get',
-            data: {
-              id: 12345,
-              name: 'user'
-            },
-            crossDomain: true,
-            xhrFields: {
-              withCredentials: true
-            },
-            dataType: 'json',
-            success: function (data) {
-              console.log(data)
-            }
-          }) */
         } else {
 
         }
