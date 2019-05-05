@@ -10,7 +10,7 @@
             <el-form-item prop="username">
               <el-input v-model="loginForm.username">
                 <span slot="prefix"  style="font-size: large;">
-                  <i class=" fas fa-user-circle fa-fw"></i>
+                  <i class="fas fa-user-circle fa-fw"></i>
                 </span>
               </el-input>
             </el-form-item>
@@ -77,7 +77,6 @@ export default {
     submitLogin (formname) {
       this.$refs[formname].validate((valid) => {
         if (valid) {
-          debugger
           this.loading = true
           this.$store.dispatch('userLogin', this.loginForm).then(() => {
             this.loading = false

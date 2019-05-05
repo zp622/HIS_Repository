@@ -33,6 +33,25 @@ export const constantRouterMap = [
     }]
   },
   {
+    path: '/',
+    name: 'Layout',
+    component: () => import('@/views/CommonComponents/Layout'),
+    hidden: true,
+    meta: {
+      title: '布局',
+      requireAuth: true
+    },
+    children: [{
+      path: '/basicInfo',
+      name: 'BasicInfo',
+      hidden: true,
+      component: () => import('@/views/userManage/BasicInfo'),
+      meta: {
+        title: '用户信息'
+      }
+    }]
+  },
+  {
     path: '/helloworld',
     name: 'test',
     component: () => import('@/components/HelloWorld')
@@ -40,6 +59,7 @@ export const constantRouterMap = [
 ]
 
 export default new Router({
+  mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
