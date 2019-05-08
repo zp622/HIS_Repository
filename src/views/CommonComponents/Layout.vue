@@ -39,7 +39,7 @@
                 <i :class="item.icon"></i>
                 <span>{{item.name}}</span>
               </template>
-              <el-menu-item v-for="item2 in item.children" :index="item2.index" :key="item2.index">
+              <el-menu-item v-if="item.role===userRole || item.role==='admin'" v-for="item2 in item.children" :index="item2.index" :key="item2.index">
                 <i :class="item2.icon"></i>
                 <span slot="title">{{item2.name}}</span>
               </el-menu-item>
@@ -53,24 +53,48 @@
       </el-aside>
       <el-main>
         <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }" @click="menuSelect('homePage')">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{firstBreadcrumb}}</el-breadcrumb-item>
           <el-breadcrumb-item v-if="secondBreadcrumb!==''">{{secondBreadcrumb}}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="containerTag">
           <el-tag
+            @click="tagSelect(tag)"
             :type="tag.index===currentTagIndex?'success':'info'"
             size="small"
             :key="tag.index"
             v-for="tag in dynamicTags"
-            closable
+            :closable="tag.index==='homePage'?false:true"
             :disable-transitions="true"
-            @close="handleCloseTag(tag.index)">
+            @close="handleCloseTag(tag)">
             {{tag.name}}
           </el-tag>
           <div style="float: right;line-height: 24px">
-            <i class="fa fa-bars" aria-hidden="true" style="color: #80808080;"></i>
-            <i class="fa fa-times-circle" aria-hidden="true"  style="color: #80808080;"></i>
+            <el-dropdown>
+              <span class="el-dropdown-link">
+                <i class="fa fa-times-circle" aria-hidden="true"  style="color: #80808080;cursor: pointer"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>关闭其他</el-dropdown-item>
+                <el-dropdown-item>关闭全部</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+
+            <el-dropdown @command="hiddenMenuCommand">
+            <span class="el-dropdown-link">
+                <i class="fa fa-forward"
+                   style="color: #80808080; cursor: pointer;"
+                   aria-hidden="true"></i>
+              </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in dynamicTags"
+                                :command="[item.parentIndex,item.index]"
+                                :key="item.index"
+                                @click="menuSelect(item.index, [item.parentIndex,item.index])">
+                <router-link :to="item.index" style="text-decoration: none">{{item.name}}</router-link>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+            </el-dropdown>
           </div>
           <div style="clear: both;"></div>
         </div>
@@ -91,6 +115,16 @@ export default {
   name: 'Layout',
   data () {
     return {
+      userRole: '',
+      activeIndexHidden: '',
+      hiddenTags: [
+        {
+          name: '首页',
+          index: 'homePage',
+          tagType: 'success',
+          parentIndex: ''
+        }
+      ],
       currentTagIndex: 'homePage',
       activeIndex: '1',
       activeIndexAside: 'homePage',
@@ -100,7 +134,7 @@ export default {
         {
           name: '首页',
           index: 'homePage',
-          tagType: 'success'
+          parentIndex: ''
         }
       ],
       menuData: [
@@ -116,17 +150,52 @@ export default {
           children: [
             {
               icon: 'fas fa-user-circle fa-fw',
-              name: '基本信息管理',
-              index: 'basicInfo'
+              name: '员工信息管理',
+              index: 'employeeInfo',
+              parentIndex: 'usermanage'
             }
           ]
         }
       ]
     }
   },
+  created () {
+    this.userRole = this.$store.getters.roles
+  },
   methods: {
+    hiddenMenuCommand (command) {
+      var param = null
+      if (command.length === 1) {
+        param = command[0]
+      } else {
+        param = command[1]
+      }
+      this.menuSelect(param, command)
+    },
+    getArrIndex (arr, obj) {
+      var index = null
+      var key = Object.keys(obj)[0]
+      arr.every(function (value, i) {
+        if (value[key] === obj[key]) {
+          index = i
+          return false
+        }
+        return true
+      })
+      return index
+    },
     handleCloseTag (tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+      var index = this.getArrIndex(this.dynamicTags, tag)
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag.index), 1)
+      var nextActiveIndex = this.dynamicTags[index - 1].index
+      this.currentTagIndex = nextActiveIndex
+      this.activeIndexAside = nextActiveIndex
+      var paramArray = tag.parentIndex === '' ? [nextActiveIndex] : [tag.parentIndex, nextActiveIndex]
+      this.menuSelect(nextActiveIndex, paramArray)
+    },
+    tagSelect (tag) {
+      this.$router.push({path: '/' + tag.index})
+      this.menuSelect(tag.index, [tag.parentIndex, tag.index])
     },
     handleSelect (key, keyPath) {
       switch (key) {
@@ -228,6 +297,12 @@ export default {
       border-bottom: 1px solid #dcdfe6;
       .el-tag--small {
         border-radius: 24px;
+      }
+      .el-button {
+        background: transparent;
+        border: 0px solid #DCDFE6;
+        padding: 0px;
+        outline: none;
       }
       cursor: default;
     }

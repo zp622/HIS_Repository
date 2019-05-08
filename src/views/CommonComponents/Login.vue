@@ -85,6 +85,7 @@ export default {
             this.loading = false
             this.$message.error(error + '111')
           })
+          this.$router.push({ path: '/' })
         } else {
 
         }

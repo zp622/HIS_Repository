@@ -41,15 +41,17 @@ export const constantRouterMap = [
       title: '布局',
       requireAuth: true
     },
-    children: [{
-      path: '/basicInfo',
-      name: 'BasicInfo',
-      hidden: true,
-      component: () => import('@/views/userManage/BasicInfo'),
-      meta: {
-        title: '用户信息'
+    children: [
+      {
+        path: '/employeeInfo',
+        name: 'EmployeeInfo',
+        hidden: true,
+        component: () => import('@/views/userManage/EmployeeInfo'),
+        meta: {
+          title: '员工信息'
+        }
       }
-    }]
+    ]
   },
   {
     path: '/helloworld',
