@@ -39,7 +39,7 @@
                 <i :class="item.icon"></i>
                 <span>{{item.name}}</span>
               </template>
-              <el-menu-item v-if="item.role===userRole || item.role==='admin'" v-for="item2 in item.children" :index="item2.index" :key="item2.index">
+              <el-menu-item v-if="item2.role===userRole || item.role==='admin'" v-for="item2 in item.children" :index="item2.index" :key="item2.index">
                 <i :class="item2.icon"></i>
                 <span slot="title">{{item2.name}}</span>
               </el-menu-item>
@@ -141,18 +141,59 @@ export default {
         {
           icon: 'fa fa-id-badge',
           name: '主页',
-          index: 'homePage'
+          index: 'homePage',
+          role: 'admin'
         },
         {
           icon: 'fa fa-id-badge',
-          name: '用户管理',
-          index: 'usermanage',
+          name: '基础信息管理',
+          index: 'basicManage',
           children: [
             {
               icon: 'fas fa-user-circle fa-fw',
-              name: '员工信息管理',
+              name: '用户管理',
+              index: 'userInfo',
+              parentIndex: 'basicManage',
+              role: 'admin'
+            },
+            {
+              icon: 'fas fa-user-circle fa-fw',
+              name: '员工信息',
               index: 'employeeInfo',
-              parentIndex: 'usermanage'
+              parentIndex: 'basicManage',
+              role: 'admin'
+            },
+            {
+              icon: 'fas fa-user-circle fa-fw',
+              name: '科室信息',
+              index: 'departmentInfo',
+              parentIndex: 'basicManage',
+              role: 'admin'
+            }
+          ]
+        },
+        {
+          icon: 'fa fa-id-badge',
+          name: '挂号管理',
+          index: 'bookingForm',
+          role: 'admin'
+        },
+        {
+          icon: 'fa fa-id-badge',
+          name: '医生工作台',
+          index: 'doctorWork',
+          children: [
+            {
+              icon: 'fa fa-id-badge',
+              name: '接诊工作台',
+              index: 'receptionWork',
+              role: 'admin'
+            },
+            {
+              icon: 'fa fa-id-badge',
+              name: '患者信息',
+              index: 'patientInfo',
+              role: 'admin'
             }
           ]
         }
@@ -174,7 +215,8 @@ export default {
     },
     getArrIndex (arr, obj) {
       var index = null
-      var key = Object.keys(obj)[0]
+      // var key = Object.keys(obj)[0]
+      var key = 'index'
       arr.every(function (value, i) {
         if (value[key] === obj[key]) {
           index = i
@@ -185,13 +227,18 @@ export default {
       return index
     },
     handleCloseTag (tag) {
+      debugger
       var index = this.getArrIndex(this.dynamicTags, tag)
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag.index), 1)
+      this.dynamicTags.splice(index, 1)
+      if (tag.index !== this.currentTagIndex) {
+        return
+      }
       var nextActiveIndex = this.dynamicTags[index - 1].index
       this.currentTagIndex = nextActiveIndex
       this.activeIndexAside = nextActiveIndex
       var paramArray = tag.parentIndex === '' ? [nextActiveIndex] : [tag.parentIndex, nextActiveIndex]
       this.menuSelect(nextActiveIndex, paramArray)
+      this.$router.push({path: '/' + nextActiveIndex})
     },
     tagSelect (tag) {
       this.$router.push({path: '/' + tag.index})
