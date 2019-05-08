@@ -102,6 +102,15 @@ export const constantRouterMap = [
     }]
   },
   {
+    path: '/selfBookEnter',
+    name: 'SelfBookEnter',
+    hidden: true,
+    component: () => import('@/views/bookingForm/SelfBookEnter'),
+    meta: {
+      title: '自助挂号'
+    }
+  },
+  {
     path: '/helloworld',
     name: 'test',
     component: () => import('@/components/HelloWorld')

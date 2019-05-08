@@ -17,7 +17,7 @@
                @select="handleSelect">
         <el-menu-item index="1">处理中心</el-menu-item>
         <el-submenu index="2">
-          <template slot="title">个人中心</template>
+          <template slot="title">{{this.$store.getters.username}}</template>
           <el-menu-item index="2-1">信息修改</el-menu-item>
           <el-menu-item index="2-2">选项2</el-menu-item>
           <el-menu-item index="2-3">选项3</el-menu-item>
@@ -227,7 +227,6 @@ export default {
       return index
     },
     handleCloseTag (tag) {
-      debugger
       var index = this.getArrIndex(this.dynamicTags, tag)
       this.dynamicTags.splice(index, 1)
       if (tag.index !== this.currentTagIndex) {
@@ -273,7 +272,9 @@ export default {
           // 面包屑塞值
           this.firstBreadcrumb = obj.name
           this.secondBreadcrumb = ''
-
+          if (this.arrExistObj(this.dynamicTags, obj) !== -1) { // 存在
+            return
+          }
           // tag塞值
           this.dynamicTags.push(obj)
         } else {
@@ -310,6 +311,8 @@ export default {
 
 <style lang="scss" scoped>
   #layout{
+    height: 100%;
+    width: 100%;
     #header{
       height:60px;
       background-color: #23c2aa;
@@ -325,6 +328,8 @@ export default {
       }
     }
     #container{
+      height: 100%;
+      width: 100%;
       .verticalMenu{
 
       }
