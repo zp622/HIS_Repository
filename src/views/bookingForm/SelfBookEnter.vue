@@ -13,15 +13,15 @@
             <el-button
               style="margin: auto;"
               type="primary"
-              @click="selfBook"
-              round>自助挂号</el-button>
+              @click="selfRegister"
+              round>自助注册</el-button>
           </el-col>
           <el-col :span="12">
             <el-button
               style="margin: auto;"
-              type="info"
-              @click="selfOrder"
-              round>自助预约</el-button>
+              type="primary"
+              @click="selfBook"
+              round>自助挂号</el-button>
           </el-col>
         </el-row>
 
@@ -250,8 +250,14 @@
 
     <el-dialog title="挂号单信息" :visible.sync="dialogFormVisible">
       <el-form :model="dialogForm"  label-width="80px">
-        <el-form-item label="病人ID">
-          <span>{{dialogForm.ID}}</span>
+        <el-form-item label="挂号单编号">
+          <span>{{dialogForm.bookNo}}</span>
+        </el-form-item>
+        <el-form-item label="当日排号位">
+          <span>{{dialogForm.serialNo}}</span>
+        </el-form-item>
+        <el-form-item label="病人编号">
+          <span>{{dialogForm.patientNo}}</span>
         </el-form-item>
         <el-form-item label="日期">
           <span>{{dialogForm.date}}</span>
@@ -286,6 +292,117 @@
       </div>
     </el-dialog>
   </div>
+  <div id="pagefour" v-show="showPage===4">
+    <el-container>
+      <el-header style="color: white;">
+        <h1>X X 医 院 门 诊</h1>
+        <h3>自助注册通道</h3>
+      </el-header>
+      <el-main>
+        <div>
+          <i class="fa fa-volume-up" aria-hidden="true"></i>
+          {{this.registerVoiceMessage}}
+        </div>
+        <div>
+          <el-form ref="registerForm" :model="registerForm" label-width="80px">
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="证件类型">
+                  <el-select v-model="registerForm.cardType">
+                    <el-option
+                      v-for="item in cardTypes"
+                      :label="item.label"
+                      :value="item.value"
+                      :disabled="item.disabled"
+                      :key="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="出生年月">
+                  <el-date-picker v-model="registerForm.birthday" type="date" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="证件号码">
+                  <el-input v-model="registerForm.cardNo"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="名族">
+                    <el-select v-model="registerForm.nation">
+                      <el-option
+                        v-for="item in nations"
+                        :label="item.label"
+                        :value="item.value"
+                        :disabled="item.disabled"
+                        :key="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="姓名">
+                  <el-input v-model="registerForm.name"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="过敏药物">
+                  <el-select v-model="registerForm.allergy">
+                    <el-option
+                      v-for="item in medicines"
+                      :label="item.label"
+                      :value="item.value"
+                      :disabled="item.disabled"
+                      :key="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="手机号码">
+                  <el-input v-model="registerForm.phone"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="通讯地址">
+                  <el-input v-model="registerForm.address"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="性别">
+                  <el-radio-group v-model="registerForm.sex" style="padding-right: 70%">
+                    <el-radio label="男"></el-radio>
+                    <el-radio label="女"></el-radio>
+                  </el-radio-group>
+               </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="">
+
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item>
+              <el-button type="primary" @click="confirmRegister">确认注册</el-button>
+              <el-button @click="showPage=1">取消</el-button>
+            </el-form-item>
+          </el-form>
+          <el-row>
+            <el-col :span="24">
+              <a @click="showPage=1" href="#">返回上一页</a>
+            </el-col>
+          </el-row>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
 </div>
 </template>
 
@@ -300,6 +417,7 @@ export default {
       deptVoiceMessage: '请选择就诊科室',
       infoVoiceMessage: '请正确填写身份信息',
       form: {
+        serialNo: '',
         bookDept: '',
         cardType: '',
         cardNo: '',
@@ -362,7 +480,8 @@ export default {
       ],
       dialogFormVisible: false,
       dialogForm: {
-        ID: '',
+        bookNo: '',
+        patientNo: '',
         name: '',
         date: '',
         sex: '',
@@ -371,7 +490,51 @@ export default {
         doctor: '',
         address: '',
         type: ''
-      }
+      },
+      registerVoiceMessage: '请正确填写个人信息',
+      registerForm: {
+        cardType: '',
+        cardNo: '',
+        name: '',
+        birthday: '',
+        sex: '',
+        allergy: '',
+        nation: '',
+        address: '',
+        phone: ''
+      },
+      medicines: [
+        {
+          value: '抗生素类药物',
+          label: '抗生素类药物'
+        },
+        {
+          value: '磺胺类药物',
+          label: '磺胺类药物'
+        },
+        {
+          value: '镇静安眠药',
+          label: '镇静安眠药'
+        },
+        {
+          value: '解热镇痛药',
+          label: '解热镇痛药'
+        },
+        {
+          value: '麻醉用药',
+          label: '麻醉用药'
+        },
+        {
+          value: '血清制剂',
+          label: '血清制剂'
+        }
+      ],
+      nations: [
+        {
+          value: '汉族',
+          label: '汉族'
+        }
+      ]
     }
   },
   methods: {
@@ -379,8 +542,9 @@ export default {
       this.showPage = 2
       voicePlay(this.deptVoiceMessage)
     },
-    selfOrder () {
-
+    selfRegister () {
+      this.showPage = 4
+      voicePlay(this.registerVoiceMessage)
     },
     selfQuery () {
 
@@ -400,6 +564,9 @@ export default {
     },
     dialogFormConfirm () {
       this.dialogFormVisible = false
+      this.showPage = 1
+    },
+    confirmRegister () {
       this.showPage = 1
     }
   }
@@ -438,6 +605,11 @@ export default {
       .el-row{
         margin: auto;
       }
+      .el-select{
+        width:100%;
+      }
+    }
+    #pagefour{
       .el-select{
         width:100%;
       }

@@ -196,6 +196,12 @@ export default {
               name: '患者信息',
               index: 'patientInfo',
               role: ['admin', 'doctor']
+            },
+            {
+              icon: 'fa fa-id-badge',
+              name: '病历查询',
+              index: 'medicalRecords',
+              role: ['admin', 'doctor']
             }
           ]
         }

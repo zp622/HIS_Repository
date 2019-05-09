@@ -87,6 +87,14 @@ export const constantRouterMap = [
         meta: {
           title: '患者信息'
         }
+      },
+      {
+        path: '/medicalRecords',
+        name: 'MedicalRecords',
+        component: () => import('@/views/doctorWork/MedicalRecords'),
+        meta: {
+          title: '病历查询'
+        }
       }
     ]
   },
