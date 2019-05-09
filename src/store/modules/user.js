@@ -23,20 +23,21 @@ const user = {
     userLogin ({commit}, userInfo) {
       var username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
+        loginByUsername(username, userInfo.password)
+          .then(response => {
           // commit('SET_TOKEN', response.result)
           // setToken(response.result)
-          var result = response.data[0]
-          commit('SET_USERNAME', result.NAME)
-          if (result.ROLE) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', result.ROLE)
-          } else {
-            console.log('resopnse.data.role is null')
-          }
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+            var result = response.data[0]
+            commit('SET_USERNAME', result.NAME)
+            if (result.ROLE) { // 验证返回的roles是否是一个非空数组
+              commit('SET_ROLES', result.ROLE)
+            } else {
+              console.log('resopnse.data.role is null')
+            }
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
       })
     },
     logOut ({ commit, state }) {

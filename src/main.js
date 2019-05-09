@@ -19,11 +19,9 @@ Vue.prototype.$axios = axios // 将axios挂载在Vue实例原型上
 
 // 设置axios请求的token
 // axios.defaults.headers.common['token'] = 'f4c902c9ae5a2a9d8f84868ad064e706'
-// 设置请求头
-// axios.defaults.headers.post['Content-type'] = 'application/json'
 
-axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true
-axios.defaults.timeout = 15000 // 超时响应
+// axios.defaults.baseURL = 'http://localhost:54184/'
+// axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded' // 配置请求头（推荐）
 axios.defaults.withCredentials = true // axios 默认不发送cookie，需要全局设置true发送cookie
 

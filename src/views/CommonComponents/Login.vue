@@ -83,9 +83,8 @@ export default {
             this.$router.push({ path: '/' })
           }).catch(error => {
             this.loading = false
-            this.$message.error(error + '111')
+            this.$message.error(error)
           })
-          this.$router.push({ path: '/' })
         } else {
 
         }
