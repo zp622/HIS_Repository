@@ -34,20 +34,21 @@
           router
           @select="menuSelect">
           <template v-for="item in menuData">
-            <el-submenu :index="item.index" v-if="item.children" :key="item.index">
+            <el-submenu :index="item.index" v-if="item.children && item.role.indexOf(userRole)!==-1" :key="item.index">
               <template slot="title">
                 <i :class="item.icon"></i>
                 <span>{{item.name}}</span>
               </template>
-              <el-menu-item v-if="item2.role===userRole || item.role==='admin'" v-for="item2 in item.children" :index="item2.index" :key="item2.index">
+              <el-menu-item v-for="item2 in item.children" v-if="item2.role.indexOf(userRole)!==-1" :index="item2.index" :key="item2.index">
                 <i :class="item2.icon"></i>
                 <span slot="title">{{item2.name}}</span>
               </el-menu-item>
             </el-submenu>
-            <el-menu-item :index="item.index" v-else :key="item.index">
+            <el-menu-item :index="item.index" v-else-if="item.role.indexOf(userRole)!==-1" :key="item.index">
               <i :class="item.icon"></i>
               <span slot="title">{{item.name}}</span>
             </el-menu-item>
+            <div v-else :key="item.index"></div>
           </template>
         </el-menu>
       </el-aside>
@@ -109,7 +110,6 @@
 </template>
 
 <script>
-// import {showMessage} from '../../utils'
 
 export default {
   name: 'Layout',
@@ -142,33 +142,34 @@ export default {
           icon: 'fa fa-id-badge',
           name: '主页',
           index: 'homePage',
-          role: 'admin'
+          role: ['admin', 'doctor', 'receptionist']
         },
         {
           icon: 'fa fa-id-badge',
           name: '基础信息管理',
           index: 'basicManage',
+          role: ['admin'],
           children: [
             {
               icon: 'fas fa-user-circle fa-fw',
               name: '用户管理',
               index: 'userInfo',
               parentIndex: 'basicManage',
-              role: 'admin'
+              role: ['admin']
             },
             {
               icon: 'fas fa-user-circle fa-fw',
               name: '员工信息',
               index: 'employeeInfo',
               parentIndex: 'basicManage',
-              role: 'admin'
+              role: ['admin']
             },
             {
               icon: 'fas fa-user-circle fa-fw',
               name: '科室信息',
               index: 'departmentInfo',
               parentIndex: 'basicManage',
-              role: 'admin'
+              role: ['admin']
             }
           ]
         },
@@ -176,24 +177,25 @@ export default {
           icon: 'fa fa-id-badge',
           name: '挂号管理',
           index: 'bookingForm',
-          role: 'admin'
+          role: ['admin', 'receptionist']
         },
         {
           icon: 'fa fa-id-badge',
           name: '医生工作台',
           index: 'doctorWork',
+          role: ['admin', 'doctor'],
           children: [
             {
               icon: 'fa fa-id-badge',
               name: '接诊工作台',
               index: 'receptionWork',
-              role: 'admin'
+              role: ['admin', 'doctor']
             },
             {
               icon: 'fa fa-id-badge',
               name: '患者信息',
               index: 'patientInfo',
-              role: 'admin'
+              role: ['admin', 'doctor']
             }
           ]
         }
