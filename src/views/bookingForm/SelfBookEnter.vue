@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="selfBookEnter">
   <div v-show="showPage===1">
     <el-container>
       <el-header>X X 医 院 门 诊</el-header>
@@ -59,30 +59,30 @@
     <el-main>
       <div>
         <i class="fa fa-volume-up" aria-hidden="true"></i>
-        {{this.voiceMessage}}
+        {{this.deptVoiceMessage}}
       </div>
       <div>
         <el-row>
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div>内科</div>
+              <div @click="deptSelect('')">内科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div>外科</div>
+              <div @click="deptSelect('surgery')">外科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div>儿科</div>
+              <div @click="deptSelect('child')">儿科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div>妇产科</div>
+              <div @click="deptSelect('gynaecology')">妇产科</div>
             </el-card>
           </el-col>
         </el-row>
@@ -90,31 +90,129 @@
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div>口腔科</div>
+              <div @click="deptSelect('stomatology')">口腔科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div>耳鼻喉科</div>
+              <div @click="deptSelect('ent')">耳鼻喉科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div>眼科</div>
+              <div @click="deptSelect('eye')">眼科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div>
+              <div @click="deptSelect('more')">
                 更多科室
                 <i class="fa fa-chevron-right" aria-hidden="true"></i>
               </div>
             </el-card>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="24">
+            <a @click="showPage=1" href="#">返回上一页</a>
+          </el-col>
+        </el-row>
       </div>
     </el-main>
+    </el-container>
+  </div>
+  <div v-show="showPage===3">
+    <el-container>
+      <el-header>X X 医 院 门 诊</el-header>
+      <el-main>
+        <div>
+          <i class="fa fa-volume-up" aria-hidden="true"></i>
+          {{this.infoVoiceMessage}}
+        </div>
+        <div>
+          <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="证件类型">
+              <el-select v-model="form.cardType">
+                <el-option
+                  v-for="item in cardTypes"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                  :key="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="证件号码">
+              <el-input v-model="form.cardNo"></el-input>
+            </el-form-item>
+            <el-form-item label="姓名">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号码">
+              <el-input v-model="form.phone"></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+              <el-input v-model="form.sex"></el-input>
+            </el-form-item>
+            <el-form-item label="挂号时间">
+              <el-col :span="11">
+                <el-date-picker type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
+              </el-col>
+              <el-col class="line" :span="2">-</el-col>
+              <el-col :span="11">
+                <el-select v-model="form.bookTime">
+                  <el-option
+                    v-for="item in bookTimes"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="item.disabled"
+                    :key="item.value"></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="挂号类别">
+              <el-select v-model="form.bookType">
+                <el-option
+                  v-for="item in bookTypes"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                  :key="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="选择医生">
+              <el-select v-model="form.doctor">
+                <el-option
+                  v-for="item in doctors"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                  :key="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="">
+              <el-checkbox-group v-model="form.protocol">
+                <a href="#"><el-checkbox label="同意网上预约挂号协议"></el-checkbox></a>
+              </el-checkbox-group>
+            </el-form-item>
+            <!--<el-form-item label="特殊资源">
+              <el-radio-group v-model="form.resource">
+                <el-radio label="线上品牌商赞助"></el-radio>
+                <el-radio label="线下场地免费"></el-radio>
+              </el-radio-group>
+            </el-form-item>-->
+            <el-form-item>
+              <el-button type="primary" @click="confirmBookForm">确认挂号</el-button>
+              <el-button @click="showPage=1">取消</el-button>
+            </el-form-item>
+          </el-form>
+          <el-row>
+            <el-col :span="24">
+              <a @click="showPage=2" href="#">返回上一页</a>
+            </el-col>
+          </el-row>
+        </div>
+      </el-main>
     </el-container>
   </div>
 </div>
@@ -128,13 +226,74 @@ export default {
   data () {
     return {
       showPage: 1,
-      voiceMessage: '请选择就诊科室'
+      deptVoiceMessage: '请选择就诊科室',
+      infoVoiceMessage: '请正确填写身份信息',
+      form: {
+        cardType: '',
+        cardNo: '',
+        name: '',
+        phone: '',
+        sex: '',
+        bookType: '',
+        doctor: '',
+        bookDate: '',
+        bookTime: '',
+        protocol: ''
+      },
+      cardTypes: [
+        {
+          value: '居民二代身份证',
+          label: '居民二代身份证'
+        },
+        {
+          value: '社保卡',
+          label: '社保卡'
+        },
+        {
+          value: '门诊卡',
+          label: '门诊卡'
+        }
+      ],
+      bookTypes: [
+        {
+          value: '普通号',
+          label: '普通号'
+        },
+        {
+          value: '主任医师号',
+          label: '主任医师号'
+        },
+        {
+          value: '副主任医师号',
+          label: '副主任医师号'
+        }
+      ],
+      doctors: [
+        {
+          value: '白求恩',
+          label: '白求恩'
+        },
+        {
+          value: '张建宁',
+          label: '张建宁'
+        }
+      ],
+      bookTimes: [
+        {
+          value: '上午',
+          label: '上午'
+        },
+        {
+          value: '下午',
+          label: '下午'
+        }
+      ]
     }
   },
   methods: {
     selfBook () {
       this.showPage = 2
-      voicePlay(this.voiceMessage)
+      voicePlay(this.deptVoiceMessage)
     },
     selfOrder () {
 
@@ -147,12 +306,26 @@ export default {
     },
     selfCharge () {
 
+    },
+    deptSelect (deptType) {
+      this.showPage = 3
+      voicePlay(this.infoVoiceMessage)
+    },
+    confirmBookForm () {
+
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  #selfBookEnter{
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../../../static/img/bookImg1.jpg');
+  }
 .el-row{
   margin: 50px 20px;
 }
