@@ -1,6 +1,6 @@
 <template>
 <div id="selfBookEnter">
-  <div v-show="showPage===1">
+  <div id="pageone" v-show="showPage===1">
     <el-container>
       <el-header>X X 医 院 门 诊</el-header>
       <el-main>
@@ -53,7 +53,7 @@
       </el-main>
     </el-container>
   </div>
-  <div v-show="showPage===2">
+  <div id="pagetwo" v-show="showPage===2">
     <el-container>
       <el-header>X X 医 院 门 诊</el-header>
     <el-main>
@@ -122,7 +122,7 @@
     </el-main>
     </el-container>
   </div>
-  <div v-show="showPage===3">
+  <div id="pagethree" v-show="showPage===3">
     <el-container>
       <el-header>X X 医 院 门 诊</el-header>
       <el-main>
@@ -132,69 +132,102 @@
         </div>
         <div>
           <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="证件类型">
-              <el-select v-model="form.cardType">
-                <el-option
-                  v-for="item in cardTypes"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled"
-                  :key="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="证件号码">
-              <el-input v-model="form.cardNo"></el-input>
-            </el-form-item>
-            <el-form-item label="姓名">
-              <el-input v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item label="手机号码">
-              <el-input v-model="form.phone"></el-input>
-            </el-form-item>
-            <el-form-item label="性别">
-              <el-input v-model="form.sex"></el-input>
-            </el-form-item>
-            <el-form-item label="挂号时间">
-              <el-col :span="11">
-                <el-date-picker type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
-              </el-col>
-              <el-col class="line" :span="2">-</el-col>
-              <el-col :span="11">
-                <el-select v-model="form.bookTime">
+            <el-row>
+            <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+              <el-form-item label="证件类型">
+                <el-select v-model="form.cardType">
                   <el-option
-                    v-for="item in bookTimes"
+                    v-for="item in cardTypes"
                     :label="item.label"
                     :value="item.value"
                     :disabled="item.disabled"
                     :key="item.value"></el-option>
                 </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+              <el-form-item label="挂号科室">
+                <el-input v-model="form.bookDept"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="证件号码">
+                  <el-input v-model="form.cardNo"></el-input>
+                </el-form-item>
               </el-col>
-            </el-form-item>
-            <el-form-item label="挂号类别">
-              <el-select v-model="form.bookType">
-                <el-option
-                  v-for="item in bookTypes"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled"
-                  :key="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="选择医生">
-              <el-select v-model="form.doctor">
-                <el-option
-                  v-for="item in doctors"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled"
-                  :key="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="">
-              <el-checkbox-group v-model="form.protocol">
-                <a href="#"><el-checkbox label="同意网上预约挂号协议"></el-checkbox></a>
-              </el-checkbox-group>
-            </el-form-item>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="挂号时间">
+                  <el-col :span="11">
+                    <el-date-picker type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
+                  </el-col>
+                  <el-col class="line" :span="2">-</el-col>
+                  <el-col :span="11">
+                    <el-select v-model="form.bookTime">
+                      <el-option
+                        v-for="item in bookTimes"
+                        :label="item.label"
+                        :value="item.value"
+                        :disabled="item.disabled"
+                        :key="item.value"></el-option>
+                    </el-select>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="姓名">
+                  <el-input v-model="form.name"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="挂号类别">
+                  <el-select v-model="form.bookType">
+                    <el-option
+                      v-for="item in bookTypes"
+                      :label="item.label"
+                      :value="item.value"
+                      :disabled="item.disabled"
+                      :key="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="手机号码">
+                  <el-input v-model="form.phone"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="选择医生">
+                  <el-select v-model="form.doctor">
+                    <el-option
+                      v-for="item in doctors"
+                      :label="item.label"
+                      :value="item.value"
+                      :disabled="item.disabled"
+                      :key="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
+                <el-form-item label="性别">
+                  <el-input v-model="form.sex"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
+                <el-form-item label="">
+                  <el-checkbox-group v-model="form.protocol">
+                    <el-checkbox><a href="#">同意网上预约挂号协议</a></el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <!--<el-form-item label="特殊资源">
               <el-radio-group v-model="form.resource">
                 <el-radio label="线上品牌商赞助"></el-radio>
@@ -214,6 +247,44 @@
         </div>
       </el-main>
     </el-container>
+
+    <el-dialog title="挂号单信息" :visible.sync="dialogFormVisible">
+      <el-form :model="dialogForm"  label-width="80px">
+        <el-form-item label="病人ID">
+          <span>{{dialogForm.ID}}</span>
+        </el-form-item>
+        <el-form-item label="日期">
+          <span>{{dialogForm.date}}</span>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <span>{{dialogForm.name}}</span>
+        </el-form-item>
+        <el-form-item label="性别">
+          <span>{{dialogForm.sex}}</span>
+        </el-form-item>
+        <el-form-item label="挂号类别">
+          <span>{{dialogForm.type}}</span>
+        </el-form-item>
+        <el-form-item label="医生">
+          <span>{{dialogForm.doctor}}</span>
+        </el-form-item>
+        <el-form-item label="排号时间">
+          <span>{{dialogForm.bookTime}}</span>
+        </el-form-item>
+        <el-form-item label="就诊地点">
+          <span>{{dialogForm.address}}</span>
+        </el-form-item>
+        <el-form-item label="金额">
+          <span>{{dialogForm.money}}</span>
+        </el-form-item>
+        <el-form-item>
+          <span>注：此凭条当日有效，过号作废。</span>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogFormConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </div>
 </template>
@@ -229,6 +300,7 @@ export default {
       deptVoiceMessage: '请选择就诊科室',
       infoVoiceMessage: '请正确填写身份信息',
       form: {
+        bookDept: '',
         cardType: '',
         cardNo: '',
         name: '',
@@ -287,7 +359,19 @@ export default {
           value: '下午',
           label: '下午'
         }
-      ]
+      ],
+      dialogFormVisible: false,
+      dialogForm: {
+        ID: '',
+        name: '',
+        date: '',
+        sex: '',
+        bookTime: '',
+        money: '',
+        doctor: '',
+        address: '',
+        type: ''
+      }
     }
   },
   methods: {
@@ -312,36 +396,64 @@ export default {
       voicePlay(this.infoVoiceMessage)
     },
     confirmBookForm () {
-
+      this.dialogFormVisible = true
+    },
+    dialogFormConfirm () {
+      this.dialogFormVisible = false
+      this.showPage = 1
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style rel="stylesheet/scss" type="text/scss" lang="scss" scoped>
   #selfBookEnter{
     width: 100%;
     height: 100%;
     background-repeat: no-repeat;
     background-size: cover;
     background-image: url('../../../static/img/bookImg1.jpg');
+    #pageone{
+      .el-row{
+        margin: 50px 20px;
+      }
+      .el-button{
+        width: 250px;
+        height: 100px;
+        border-radius: 100px;
+      }
+    }
+    #pagetwo{
+      .el-row{
+        margin: 50px 20px;
+      }
+      .el-card{
+        width: 250px;
+        height: 100px;
+        margin: auto;
+        cursor: pointer;
+      }
+    }
+    #pagethree{
+      .el-row{
+        margin: auto;
+      }
+      .el-select{
+        width:100%;
+      }
+    }
   }
-.el-row{
-  margin: 50px 20px;
-}
-  .el-button{
-    width: 250px;
-    height: 100px;
-    border-radius: 100px;
-  }
+  /*.el-input__inner{
+    background-color: #17384942!important;
+    color:white;
+  }*/
   .el-container{
     width: 100%;
     height: 100%;
   }
-  .el-card{
-    width: 250px;
-    height: 100px;
-    margin: auto;
-    cursor: pointer;
+  .el-form-item__label{
+    color: white;
+    font-weight: 600;
+    font-family: 宋体;
   }
 </style>
