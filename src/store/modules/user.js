@@ -29,7 +29,7 @@ const user = {
           // setToken(response.result)
             var result = response.data[0]
             commit('SET_USERNAME', result.name)
-            if (result.ROLE) { // 验证返回的roles是否是一个非空数组
+            if (result.role) { // 验证返回的roles是否是一个非空数组
               commit('SET_ROLES', result.role)
             } else {
               console.log('resopnse.data.role is null')

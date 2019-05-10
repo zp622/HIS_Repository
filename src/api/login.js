@@ -8,8 +8,8 @@ export function loginByUsername (username, password) {
     url: loginPath,
     method: 'post',
     data: {
-      JOB_NUMBER: username,
-      PASSWORD: password
+      jobNumber: username,
+      password: password
     },
     params: {}
   })
