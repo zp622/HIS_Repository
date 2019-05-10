@@ -88,7 +88,21 @@ export default {
         name: '',
         phone: ''
       },
-      currentPage: '',
+      cardTypes: [
+        {
+          value: '居民二代身份证',
+          label: '居民二代身份证'
+        },
+        {
+          value: '社保卡',
+          label: '社保卡'
+        },
+        {
+          value: '就诊卡',
+          label: '就诊卡'
+        }
+      ],
+      currentPage: 1,
       patientData: []
     }
   },

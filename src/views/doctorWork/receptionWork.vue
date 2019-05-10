@@ -5,7 +5,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="日期">
-            <el-date-picker
+            <el-date-picker style="width: 100%"
               v-model="queryForm.date"
               align="right"
               type="date"
@@ -106,7 +106,7 @@ export default {
         patientNo: ''
       },
       currentPage: 1,
-      bookFormData: ''
+      bookFormData: []
     }
   },
   created () {
