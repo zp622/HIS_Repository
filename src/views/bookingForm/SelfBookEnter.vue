@@ -408,7 +408,7 @@ export default {
     return {
       showPage: 1,
       deptVoiceMessage: '请选择就诊科室',
-      infoVoiceMessage: '请正确填写身份信息',
+      infoVoiceMessage: '请填写挂号信息',
       form: {
         serialNo: '',
         bookDept: '',

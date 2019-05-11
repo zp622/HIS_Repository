@@ -1,5 +1,4 @@
 <template>
-
   <el-container id="layout">
     <el-header id="header">
       <div class="logoDiv">
@@ -101,17 +100,90 @@
             <router-view/>
           </keep-alive>
         </transition>
+        <el-dialog title="修改密码" :visible.sync="pwdDialogVisible">
+          <el-form status-icon ref="updatePwdForm" :model="updatePwdForm" label-width="80px" :rules="pwdRule">
+            <el-form-item label="账号" prop="jonNumber" class="formSpan">
+              <span>{{updatePwdForm.jobNumber}}</span>
+            </el-form-item>
+            <el-form-item label="旧密码" prop="oldPwd">
+              <el-input v-model="updatePwdForm.oldPwd" type="password"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="newPwd">
+              <el-input v-model="updatePwdForm.newPwd" type="password"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="confirmPwd">
+              <el-input v-model="updatePwdForm.confirmPwd" type="password"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="updatePwd(updatePwdForm)">确 定</el-button>
+            <el-button @click="cancelPwd">取 消</el-button>
+          </div>
+        </el-dialog>
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
+import {checkOldPassword, updatePassword} from '../../api/layout'
 
 export default {
   name: 'Layout',
   data () {
+    const validateOldPwd = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入旧密码'))
+      } else {
+        var flag = checkOldPassword
+        if (!flag) {
+          callback(new Error('旧密码不正确'))
+        } else {
+          callback()
+        }
+      }
+    }
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新密码'))
+      } else {
+        if (this.updatePwdForm.confirmPwd !== '') {
+          this.$refs.updatePwdForm.validateField('confirmPwd')
+        }
+        callback()
+      }
+    }
+    const validatePassCheck = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.updatePwdForm.newPwd) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
+      pwdDialogVisible: false,
+      updatePwdForm: {
+        oldPwd: '',
+        newPwd: '',
+        confirmPwd: '',
+        updatePwdForm: ''
+      },
+      pwdRule: {
+        jobNumber: [
+          {}
+        ],
+        oldPwd: [
+          {validator: validateOldPwd, trigger: 'blur'}
+        ],
+        newPwd: [
+          {validator: validatePass, trigger: 'blur'}
+        ],
+        confirmPwd: [
+          {validator: validatePassCheck, trigger: 'blur'}
+        ]
+      },
       userRole: '',
       activeIndexHidden: '',
       hiddenTags: [
@@ -209,6 +281,23 @@ export default {
     this.userRole = this.$store.getters.roles
   },
   methods: {
+    updatePwd (formInfo) {
+      this.$refs['updatePwdForm'].validate((valid) => {
+        if (valid) {
+          var result = updatePassword(formInfo)
+          if (result.code === '200') {
+            this.$message.success('修改成功，请重新登录')
+          } else {
+            this.$message.error(result.message)
+          }
+        } else {
+
+        }
+      })
+    },
+    cancelPwd () {
+
+    },
     hiddenMenuCommand (command) {
       var param = null
       if (command.length === 1) {
@@ -250,11 +339,13 @@ export default {
     },
     handleSelect (key, keyPath) {
       switch (key) {
-        case '1':;break
-        case '2':;break
-        case 'logout':
-          this.$message('退出逻辑')
+        case 'editPwd':
+          this.updatePwdForm.jobNumber = this.$store.getters.jobNumber
+          this.pwdDialogVisible = true
           break
+        case 'logout':
+
+          ;break
       }
     },
     menuSelect (index, indexPath) {

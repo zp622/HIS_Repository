@@ -4,6 +4,7 @@ import { getToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
     username: '',
+    jobNumber: '',
     token: getToken(),
     roles: []
   },
@@ -16,6 +17,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_JOBNUMBER: (state, jobNumber) => {
+      state.jobNumber = jobNumber
     }
   },
   actions: {
@@ -29,10 +33,11 @@ const user = {
           // setToken(response.result)
             var result = response.data[0]
             commit('SET_USERNAME', result.name)
-            if (result.role) { // 验证返回的roles是否是一个非空数组
+            commit('SET_JOBNUMBER', result.jobNumber)
+            if (result.role) { // 验证返回的role是否非空
               commit('SET_ROLES', result.role)
             } else {
-              console.log('resopnse.data.role is null')
+              console.log('返回中的用户角色为空')
             }
             resolve()
           }).catch(error => {
