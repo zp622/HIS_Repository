@@ -130,12 +130,12 @@
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           {{this.infoVoiceMessage}}
         </div>
-        <div>
+        <div class="formDiv">
           <el-form ref="form" :model="form" label-width="80px">
             <el-row>
             <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
               <el-form-item label="证件类型" class="label">
-                <el-select v-model="form.cardType">
+                <el-select class="formInput" v-model="form.cardType">
                   <el-option
                     v-for="item in cardTypes"
                     :label="item.label"
@@ -147,24 +147,24 @@
             </el-col>
             <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
               <el-form-item label="挂号科室" class="label">
-                <el-input v-model="form.bookDept"></el-input>
+                <el-input class="formInput" v-model="form.bookDept"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
                 <el-form-item label="证件号码" class="label">
-                  <el-input v-model="form.cardNo"></el-input>
+                  <el-input class="formInput" v-model="form.cardNo"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="挂号时间" class="label">
                   <el-col :span="11">
-                    <el-date-picker type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
+                    <el-date-picker class="formInput" type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
                   </el-col>
                   <el-col class="line" :span="2">-</el-col>
                   <el-col :span="11">
-                    <el-select v-model="form.bookTime">
+                    <el-select class="formInput" v-model="form.bookTime">
                       <el-option
                         v-for="item in bookTimes"
                         :label="item.label"
@@ -179,12 +179,12 @@
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
                 <el-form-item label="姓名" class="label">
-                  <el-input v-model="form.name"></el-input>
+                  <el-input class="formInput" v-model="form.name"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="挂号类别" class="label">
-                  <el-select v-model="form.bookType">
+                  <el-select class="formInput" v-model="form.bookType">
                     <el-option
                       v-for="item in bookTypes"
                       :label="item.label"
@@ -198,12 +198,12 @@
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
                 <el-form-item label="手机号码" class="label">
-                  <el-input v-model="form.phone"></el-input>
+                  <el-input class="formInput" v-model="form.phone"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="选择医生" class="label">
-                  <el-select v-model="form.doctor">
+                  <el-select class="formInput" v-model="form.doctor">
                     <el-option
                       v-for="item in doctors"
                       :label="item.label"
@@ -217,23 +217,17 @@
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
                 <el-form-item label="性别" class="label">
-                  <el-input v-model="form.sex"></el-input>
+                  <el-input class="formInput" v-model="form.sex"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="">
                   <el-checkbox-group v-model="form.protocol">
-                    <el-checkbox><a href="#">同意网上预约挂号协议</a></el-checkbox>
+                    <el-checkbox><a href="#" style="color: #05ff05;font-family: 宋体">同意网上预约挂号协议</a></el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
               </el-col>
             </el-row>
-            <!--<el-form-item label="特殊资源">
-              <el-radio-group v-model="form.resource">
-                <el-radio label="线上品牌商赞助"></el-radio>
-                <el-radio label="线下场地免费"></el-radio>
-              </el-radio-group>
-            </el-form-item>-->
             <el-form-item>
               <el-button type="primary" @click="confirmBookForm">确认挂号</el-button>
               <el-button @click="showPage=1">取消</el-button>
@@ -250,37 +244,37 @@
 
     <el-dialog title="挂号单信息" :visible.sync="dialogFormVisible">
       <el-form :model="dialogForm"  label-width="180px">
-        <el-form-item label="挂号单编号"  class="label">
+        <el-form-item label="挂号单编号">
           <span>{{dialogForm.bookNo}}</span>
         </el-form-item>
-        <el-form-item label="当日排号位" class="label">
+        <el-form-item label="当日排号位">
           <span>{{dialogForm.serialNo}}</span>
         </el-form-item>
-        <el-form-item label="病人编号" class="label">
+        <el-form-item label="病人编号">
           <span>{{dialogForm.patientNo}}</span>
         </el-form-item>
-        <el-form-item label="日期" class="label">
+        <el-form-item label="日期">
           <span>{{dialogForm.date}}</span>
         </el-form-item>
-        <el-form-item label="姓名" class="label">
+        <el-form-item label="姓名">
           <span>{{dialogForm.name}}</span>
         </el-form-item>
-        <el-form-item label="性别" class="label">
+        <el-form-item label="性别">
           <span>{{dialogForm.sex}}</span>
         </el-form-item>
-        <el-form-item label="挂号类别" class="label">
+        <el-form-item label="挂号类别">
           <span>{{dialogForm.type}}</span>
         </el-form-item>
-        <el-form-item label="医生" class="label">
+        <el-form-item label="医生">
           <span>{{dialogForm.doctor}}</span>
         </el-form-item>
-        <el-form-item label="排号时间" class="label">
+        <el-form-item label="排号时间">
           <span>{{dialogForm.bookTime}}</span>
         </el-form-item>
-        <el-form-item label="就诊地点" class="label">
+        <el-form-item label="就诊地点">
           <span>{{dialogForm.address}}</span>
         </el-form-item>
-        <el-form-item label="金额" class="label">
+        <el-form-item label="金额">
           <span>{{dialogForm.money}}</span>
         </el-form-item>
         <el-form-item>
@@ -302,12 +296,12 @@
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           {{this.registerVoiceMessage}}
         </div>
-        <div style="margin: 50px 20px">
+        <div class="formDiv">
           <el-form ref="registerForm" :model="registerForm" label-width="80px">
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件类型">
-                  <el-select v-model="registerForm.cardType">
+                <el-form-item label="证件类型" class="label">
+                  <el-select v-model="registerForm.cardType" class="formInput">
                     <el-option
                       v-for="item in cardTypes"
                       :label="item.label"
@@ -318,20 +312,20 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="出生年月">
-                  <el-date-picker v-model="registerForm.birthday" type="date" style="width: 100%;"></el-date-picker>
+                <el-form-item label="出生日期" class="label">
+                  <el-date-picker class="formInput" v-model="registerForm.birthday" type="date" style="width: 100%;"></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件号码">
-                  <el-input v-model="registerForm.cardNo"></el-input>
+                <el-form-item label="证件号码" class="label">
+                  <el-input class="formInput" v-model="registerForm.cardNo"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="名族">
-                    <el-select v-model="registerForm.nation">
+                <el-form-item label="名族" class="label">
+                    <el-select class="formInput" v-model="registerForm.nation">
                       <el-option
                         v-for="item in nations"
                         :label="item.label"
@@ -344,13 +338,13 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="姓名">
-                  <el-input v-model="registerForm.name"></el-input>
+                <el-form-item label="姓名" class="label">
+                  <el-input class="formInput" v-model="registerForm.name"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="过敏药物">
-                  <el-select v-model="registerForm.allergy">
+                <el-form-item label="过敏药物" class="label">
+                  <el-select class="formInput" v-model="registerForm.allergy">
                     <el-option
                       v-for="item in medicines"
                       :label="item.label"
@@ -363,19 +357,19 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="手机号码">
-                  <el-input v-model="registerForm.phone"></el-input>
+                <el-form-item label="手机号码" class="label">
+                  <el-input class="formInput" v-model="registerForm.phone"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="通讯地址">
-                  <el-input v-model="registerForm.address"></el-input>
+                <el-form-item label="通讯地址" class="label">
+                  <el-input class="formInput" v-model="registerForm.address"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="性别">
+                <el-form-item label="性别" class="label">
                   <el-radio-group v-model="registerForm.sex" style="padding-right: 70%">
                     <el-radio label="男"></el-radio>
                     <el-radio label="女"></el-radio>
@@ -388,14 +382,14 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item>
-              <el-button type="primary" @click="confirmRegister">确认注册</el-button>
+            <el-form-item class="formBtn">
+              <el-button type="primary" @click="confirmRegister">注册</el-button>
               <el-button @click="showPage=1">取消</el-button>
             </el-form-item>
           </el-form>
           <el-row>
             <el-col :span="24">
-              <a @click="showPage=1" href="#">返回上一页</a>
+              <a @click="showPage=1" href="#" style="color: gainsboro;">返回上一页</a>
             </el-col>
           </el-row>
         </div>
@@ -643,8 +637,35 @@ export default {
     color: #05ff05;
     font-family: 宋体;
     font-size: 26px;
+    margin: 1% auto;
   }
+  /*重写form表单中的label的样式*/
   .label .el-form-item__label{
     color: white;
+    font-weight: 600;
+  }
+  /*重写form表单中的input框的样式*/
+  .formInput .el-input__inner{
+    background-color: #17384942;
+    color:white;
+  }
+  /*form表单区域 自适应margin*/
+  .formDiv{
+    margin: 3.5% auto;
+  }
+  /*重写性别选项的样式*/
+  .el-radio{
+    color: white;
+  }
+  .el-radio__input.is-checked+.el-radio__label{
+    color:#05ff05;
+  }
+  .el-radio__input.is-checked .el-radio__inner {
+    border-color: #05ff05;
+    background: #05ff05;
+  }
+  /*解决form表单中按钮位置偏移的问题*/
+  .formBtn .el-form-item__content{
+    margin-left: 0px!important;
   }
 </style>
