@@ -1,22 +1,23 @@
 <template>
 <div id="bookingForm">
   <div>
-    <h1>XX医院 欢迎您</h1>
-    <el-row>
-      <el-col :span="12">
-        <el-card
-          class="box-card"
-          style="width: 250px;height: 100px;margin: auto;cursor: pointer">
-          <span @click="selfBookEnter">自助入口</span>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card class="box-card" style="width: 250px;height: 100px;margin: auto">
-          人工入口
-        </el-card>
-      </el-col>
-    </el-row>
-
+    <div style="font-family: 宋体;font-size: 40px;margin: 4% auto">医院信息管理系统 欢迎您</div>
+    <div style="margin: 8% auto">
+      <el-row>
+        <el-col :span="12">
+          <el-card
+            class="box-card"
+            style="width: 250px;height: 100px;margin: auto;cursor: pointer">
+            <div style="font-family: 宋体;line-height:60px;width: 205px;height: 60px;font-size: 26px" @click="selfBookEnter">自助入口</div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card class="box-card" style="width: 250px;height: 100px;margin: auto">
+            <div style="font-family: 宋体;line-height:60px;width: 205px;height: 60px;font-size: 26px">人工入口</div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </div>
 </template>
@@ -44,7 +45,8 @@ export default {
   #bookingForm{
     height: 89%;
     width: 100%;
-
+    background: url("../../../static/img/welcome.jpg")  no-repeat center center;
+    background-size: 100% 100%;
     border-bottom: 1px solid #EBEEF5;
     border-right: 1px solid #EBEEF5;
     border-left: 1px solid #EBEEF5;
