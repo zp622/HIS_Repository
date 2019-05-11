@@ -61,7 +61,7 @@
         <i class="fa fa-volume-up" aria-hidden="true"></i>
         {{this.deptVoiceMessage}}
       </div>
-      <div>
+      <div class="formDiv">
         <el-row>
           <el-col :span="6">
             <el-card
@@ -115,7 +115,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <a @click="showPage=1" href="#">返回上一页</a>
+            <a @click="showPage=1" href="#" style="color: gainsboro">返回上一页</a>
           </el-col>
         </el-row>
       </div>
@@ -228,14 +228,14 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item>
-              <el-button type="primary" @click="confirmBookForm">确认挂号</el-button>
+            <el-form-item class="formBtn">
+              <el-button type="primary" @click="confirmBookForm">挂号</el-button>
               <el-button @click="showPage=1">取消</el-button>
             </el-form-item>
           </el-form>
           <el-row>
             <el-col :span="24">
-              <a @click="showPage=2" href="#">返回上一页</a>
+              <a @click="showPage=2" href="#" style="color: gainsboro">返回上一页</a>
             </el-col>
           </el-row>
         </div>
@@ -592,6 +592,10 @@ export default {
         margin: 50px 20px;
       }
       .el-card{
+        color: white;
+        background-color: #0000004f;
+        font-size: 24px;
+        font-family: 宋体;
         width: 250px;
         height: 100px;
         margin: auto;
