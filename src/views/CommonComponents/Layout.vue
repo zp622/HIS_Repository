@@ -3,10 +3,10 @@
   <el-container id="layout">
     <el-header id="header">
       <div class="logoDiv">
-
+        <img src="../../../static/img/logo.png" style="width: 130px;height: 60px;"/>
       </div>
       <div style="float: left;line-height: 60px">
-        <h2 style="color:white;">XX医院信息管理系统</h2>
+        <h2 style="color:white;">医院信息管理系统</h2>
       </div>
       <el-menu :default-active="activeIndex"
                unique-opened
@@ -15,14 +15,11 @@
                mode="horizontal"
                background-color="transparent"
                @select="handleSelect">
-        <el-menu-item index="1">处理中心</el-menu-item>
-        <el-submenu index="2">
-          <template slot="title">{{this.$store.getters.username}}</template>
-          <el-menu-item index="2-1">信息修改</el-menu-item>
-          <el-menu-item index="2-2">选项2</el-menu-item>
-          <el-menu-item index="2-3">选项3</el-menu-item>
-        </el-submenu>
-        <el-menu-item index="logout">注销</el-menu-item>
+        <div style="border:none;display: inline-block;line-height: 60px;color: white;font-size: 14px;float: left;margin: auto 15px;">
+        <span>{{this.$store.getters.username}}，欢迎您</span>
+        </div>
+        <el-menu-item index="editPwd" style="color: white;">修改密码</el-menu-item>
+        <el-menu-item index="logout" style="color: white;">退出登录</el-menu-item>
       </el-menu>
     </el-header>
     <div style="clear: both"></div>
@@ -327,8 +324,9 @@ export default {
       //#1aa78680;
       .logoDiv{
         height:60px;
-        width:250px;
+        width:180px;
         float: left;
+        background-image: url("../../../static/img/logo.png");
       }
       .horizontalMenu{
         float:right;
@@ -366,5 +364,11 @@ export default {
       }
       cursor: default;
     }
+  }
+  #layout .el-menu--horizontal > .el-menu-item:hover{
+    background-color: #c8e4d857!important;
+  }
+  #layout .el-menu--horizontal > .el-menu-item.is-active{
+    background-color: #c8e4d857!important;
   }
 </style>

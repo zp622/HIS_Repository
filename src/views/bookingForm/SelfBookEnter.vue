@@ -2,9 +2,9 @@
 <div id="selfBookEnter">
   <div id="pageone" v-show="showPage===1">
     <el-container>
-      <el-header>X X 医 院 门 诊</el-header>
+      <el-header><div class="title">医院门诊 自助服务通道</div></el-header>
       <el-main>
-        <div>
+        <div class="voiceTip">
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           请选择您所需要的服务
         </div>
@@ -55,9 +55,9 @@
   </div>
   <div id="pagetwo" v-show="showPage===2">
     <el-container>
-      <el-header>X X 医 院 门 诊</el-header>
+      <el-header><div class="title">医院门诊 自助挂号通道</div></el-header>
     <el-main>
-      <div>
+      <div class="voiceTip">
         <i class="fa fa-volume-up" aria-hidden="true"></i>
         {{this.deptVoiceMessage}}
       </div>
@@ -124,9 +124,9 @@
   </div>
   <div id="pagethree" v-show="showPage===3">
     <el-container>
-      <el-header>X X 医 院 门 诊</el-header>
+      <el-header><div class="title">医院门诊 自助挂号通道</div></el-header>
       <el-main>
-        <div>
+        <div class="voiceTip">
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           {{this.infoVoiceMessage}}
         </div>
@@ -295,15 +295,14 @@
   <div id="pagefour" v-show="showPage===4">
     <el-container>
       <el-header style="color: white;">
-        <h1>X X 医 院 门 诊</h1>
-        <h3>自助注册通道</h3>
+        <div class="title">医院门诊 自助注册通道</div>
       </el-header>
       <el-main>
-        <div>
+        <div class="voiceTip">
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           {{this.registerVoiceMessage}}
         </div>
-        <div>
+        <div style="margin: 50px 20px">
           <el-form ref="registerForm" :model="registerForm" label-width="80px">
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
@@ -580,6 +579,7 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     background-image: url('../../../static/img/bookImg1.jpg');
+    /*服务选择页面*/
     #pageone{
       .el-row{
         margin: 50px 20px;
@@ -588,8 +588,11 @@ export default {
         width: 250px;
         height: 100px;
         border-radius: 100px;
+        font-size: 20px;
+        font-family: 宋体;
       }
     }
+    /*科室选择页面*/
     #pagetwo{
       .el-row{
         margin: 50px 20px;
@@ -601,6 +604,7 @@ export default {
         cursor: pointer;
       }
     }
+    /*挂号信息填写页面*/
     #pagethree{
       .el-row{
         margin: auto;
@@ -609,6 +613,7 @@ export default {
         width:100%;
       }
     }
+    /*自助注册页面*/
     #pagefour{
       .el-select{
         width:100%;
@@ -619,13 +624,23 @@ export default {
     background-color: #17384942!important;
     color:white;
   }*/
+  /*容器*/
   .el-container{
     width: 100%;
     height: 100%;
   }
-  .el-form-item__label{
+  /*医院门诊 title样式*/
+  .title{
+    font-size: 40px;
     color: white;
-    font-weight: 600;
+    margin: 20px auto;
     font-family: 宋体;
+    font-weight: 600;
+  }
+  /*语音提示 文字样式*/
+  .voiceTip{
+    color: #05ff05;
+    font-family: 宋体;
+    font-size: 26px;
   }
 </style>
