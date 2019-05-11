@@ -134,7 +134,7 @@
           <el-form ref="form" :model="form" label-width="80px">
             <el-row>
             <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-              <el-form-item label="证件类型">
+              <el-form-item label="证件类型" class="label">
                 <el-select v-model="form.cardType">
                   <el-option
                     v-for="item in cardTypes"
@@ -146,19 +146,19 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-              <el-form-item label="挂号科室">
+              <el-form-item label="挂号科室" class="label">
                 <el-input v-model="form.bookDept"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件号码">
+                <el-form-item label="证件号码" class="label">
                   <el-input v-model="form.cardNo"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="挂号时间">
+                <el-form-item label="挂号时间" class="label">
                   <el-col :span="11">
                     <el-date-picker type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
                   </el-col>
@@ -178,12 +178,12 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="姓名">
+                <el-form-item label="姓名" class="label">
                   <el-input v-model="form.name"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="挂号类别">
+                <el-form-item label="挂号类别" class="label">
                   <el-select v-model="form.bookType">
                     <el-option
                       v-for="item in bookTypes"
@@ -197,12 +197,12 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="手机号码">
+                <el-form-item label="手机号码" class="label">
                   <el-input v-model="form.phone"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="选择医生">
+                <el-form-item label="选择医生" class="label">
                   <el-select v-model="form.doctor">
                     <el-option
                       v-for="item in doctors"
@@ -216,7 +216,7 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="性别">
+                <el-form-item label="性别" class="label">
                   <el-input v-model="form.sex"></el-input>
                 </el-form-item>
               </el-col>
@@ -250,37 +250,37 @@
 
     <el-dialog title="挂号单信息" :visible.sync="dialogFormVisible">
       <el-form :model="dialogForm"  label-width="180px">
-        <el-form-item label="挂号单编号">
+        <el-form-item label="挂号单编号"  class="label">
           <span>{{dialogForm.bookNo}}</span>
         </el-form-item>
-        <el-form-item label="当日排号位">
+        <el-form-item label="当日排号位" class="label">
           <span>{{dialogForm.serialNo}}</span>
         </el-form-item>
-        <el-form-item label="病人编号">
+        <el-form-item label="病人编号" class="label">
           <span>{{dialogForm.patientNo}}</span>
         </el-form-item>
-        <el-form-item label="日期">
+        <el-form-item label="日期" class="label">
           <span>{{dialogForm.date}}</span>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" class="label">
           <span>{{dialogForm.name}}</span>
         </el-form-item>
-        <el-form-item label="性别">
+        <el-form-item label="性别" class="label">
           <span>{{dialogForm.sex}}</span>
         </el-form-item>
-        <el-form-item label="挂号类别">
+        <el-form-item label="挂号类别" class="label">
           <span>{{dialogForm.type}}</span>
         </el-form-item>
-        <el-form-item label="医生">
+        <el-form-item label="医生" class="label">
           <span>{{dialogForm.doctor}}</span>
         </el-form-item>
-        <el-form-item label="排号时间">
+        <el-form-item label="排号时间" class="label">
           <span>{{dialogForm.bookTime}}</span>
         </el-form-item>
-        <el-form-item label="就诊地点">
+        <el-form-item label="就诊地点" class="label">
           <span>{{dialogForm.address}}</span>
         </el-form-item>
-        <el-form-item label="金额">
+        <el-form-item label="金额" class="label">
           <span>{{dialogForm.money}}</span>
         </el-form-item>
         <el-form-item>
@@ -572,7 +572,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" type="text/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" type="text/scss" lang="scss">
   #selfBookEnter{
     width: 100%;
     height: 100%;
@@ -612,6 +612,7 @@ export default {
       .el-select{
         width:100%;
       }
+
     }
     /*自助注册页面*/
     #pagefour{
@@ -642,5 +643,8 @@ export default {
     color: #05ff05;
     font-family: 宋体;
     font-size: 26px;
+  }
+  .label .el-form-item__label{
+    color: white;
   }
 </style>
