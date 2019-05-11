@@ -1,19 +1,18 @@
 <template>
 <div id="bookingForm">
   <div>
-    <div style="font-family: 宋体;font-size: 40px;margin: 4% auto">医院信息管理系统 欢迎您</div>
+    <div style="font-weight: 600;font-family: 宋体;font-size: 40px;margin: 4% auto">医院信息管理系统 欢迎您</div>
     <div style="margin: 8% auto">
       <el-row>
         <el-col :span="12">
           <el-card
-            class="box-card"
-            style="width: 250px;height: 100px;margin: auto;cursor: pointer">
-            <div style="font-family: 宋体;line-height:60px;width: 205px;height: 60px;font-size: 26px" @click="selfBookEnter">自助入口</div>
+            class="box-card">
+            <div class="enterDiv" @click="selfBookEnter">自助入口</div>
           </el-card>
         </el-col>
         <el-col :span="12">
-          <el-card class="box-card" style="width: 250px;height: 100px;margin: auto">
-            <div style="font-family: 宋体;line-height:60px;width: 205px;height: 60px;font-size: 26px">人工入口</div>
+          <el-card class="box-card">
+            <div class="enterDiv">人工入口</div>
           </el-card>
         </el-col>
       </el-row>
@@ -56,5 +55,20 @@ export default {
     box-shadow: 0 8px 12px 0 rgba(0,0,0,.1);
     border-radius: 4px;
     overflow: hidden;
+    .box-card{
+      width: 250px;
+      height: 100px;
+      margin: auto;
+      cursor: pointer;
+      background-color: #d7ff57b8;//#d7ff57b8
+      .enterDiv{
+        font-family: 宋体;
+        line-height:60px;
+        width: 205px;
+        height: 60px;
+        font-size: 26px;
+        font-weight: 600;
+      }
+    }
   }
 </style>
