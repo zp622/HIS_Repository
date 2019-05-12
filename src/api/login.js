@@ -3,7 +3,6 @@ import request from '@/utils/request'
 export const loginPath = '/api/User/userLogin'
 export const logoutPath = '/api/User/exitLogin'
 export function loginByUsername (username, password) {
-  debugger
   return request({
     url: loginPath,
     method: 'post',

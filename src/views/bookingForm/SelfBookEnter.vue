@@ -2,7 +2,13 @@
 <div id="selfBookEnter">
   <div id="pageone" v-show="showPage===1">
     <el-container>
-      <el-header><div class="title">医院门诊 自助服务通道</div></el-header>
+      <el-header><div class="title" style="display: inline-block">医院门诊 自助服务通道</div>
+      <div style="display: inline-block;float: left;">
+        <router-link to="/bookingForm" style="color: white">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>退出
+        </router-link>
+      </div>
+      </el-header>
       <el-main>
         <div class="voiceTip">
           <i class="fa fa-volume-up" aria-hidden="true"></i>
@@ -13,7 +19,7 @@
             <el-button
               style="margin: auto;"
               type="primary"
-              @click="selfRegister"
+              @click="selfRegister(registerForm)"
               round>自助注册</el-button>
           </el-col>
           <el-col :span="12">
@@ -297,10 +303,10 @@
           {{this.registerVoiceMessage}}
         </div>
         <div class="formDiv">
-          <el-form ref="registerForm" :model="registerForm" label-width="80px">
+          <el-form ref="registerForm" :model="registerForm" label-width="80px" :rules="registerFormRules">
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件类型" class="label">
+                <el-form-item label="证件类型" class="label" prop="cardType">
                   <el-select v-model="registerForm.cardType" class="formInput">
                     <el-option
                       v-for="item in cardTypes"
@@ -312,19 +318,19 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="出生日期" class="label">
+                <el-form-item label="出生日期" class="label" prop="birthday">
                   <el-date-picker class="formInput" v-model="registerForm.birthday" type="date" style="width: 100%;"></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件号码" class="label">
-                  <el-input class="formInput" v-model="registerForm.cardNo"></el-input>
+                <el-form-item label="证件号码" class="label" prop="cardNo">
+                  <el-input :disabled="registerForm.cardType!==''?false:true" class="formInput" v-model="registerForm.cardNo" oninput = "value=value.replace(/[^\w]/ig,'')"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="名族" class="label">
+                <el-form-item label="民族" class="label" prop="nation">
                     <el-select class="formInput" v-model="registerForm.nation">
                       <el-option
                         v-for="item in nations"
@@ -338,12 +344,12 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="姓名" class="label">
+                <el-form-item label="姓名" class="label" prop="name">
                   <el-input class="formInput" v-model="registerForm.name"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="过敏药物" class="label">
+                <el-form-item label="过敏药物" class="label" prop="allergy">
                   <el-select class="formInput" v-model="registerForm.allergy">
                     <el-option
                       v-for="item in medicines"
@@ -357,19 +363,19 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="手机号码" class="label">
-                  <el-input class="formInput" v-model="registerForm.phone"></el-input>
+                <el-form-item label="手机号码" class="label" prop="phone">
+                  <el-input class="formInput" v-model="registerForm.phone" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="通讯地址" class="label">
+                <el-form-item label="通讯地址" class="label" prop="address">
                   <el-input class="formInput" v-model="registerForm.address"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="性别" class="label">
+                <el-form-item label="性别" class="label" prop="sex">
                   <el-radio-group v-model="registerForm.sex" style="padding-right: 70%">
                     <el-radio label="男"></el-radio>
                     <el-radio label="女"></el-radio>
@@ -377,19 +383,19 @@
                </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="">
+                <el-form-item label="" prop="">
 
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item class="formBtn">
-              <el-button type="primary" @click="confirmRegister">注册</el-button>
-              <el-button @click="showPage=1">取消</el-button>
+              <el-button type="primary" @click="confirmRegister(registerForm)">注册</el-button>
+              <el-button @click="cancelRegisterForm">取消</el-button>
             </el-form-item>
           </el-form>
           <el-row>
             <el-col :span="24">
-              <a @click="showPage=1" href="#" style="color: gainsboro;">返回上一页</a>
+              <a @click="cancelRegisterForm" href="#" style="color: gainsboro;">返回上一页</a>
             </el-col>
           </el-row>
         </div>
@@ -400,16 +406,41 @@
 </template>
 
 <script>
-import {voicePlay} from '../../utils'
+import {voicePlay, validateMobile, validatePhone, validateIDcard} from '../../utils'
+import {patientRegister} from '../../api/patientRegister'
 
 export default {
   name: 'SelfBookForm',
   data () {
+    const phoneValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else {
+        if (validateMobile(value) || validatePhone(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确的手机号或座机号'))
+        }
+      }
+    }
+    const cardNoValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else if (this.registerForm.cardType === '居民二代身份证') {
+        if (validateIDcard(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确的身份证号'))
+        }
+      } else {
+        callback()
+      }
+    }
     return {
       showPage: 1,
       deptVoiceMessage: '请选择就诊科室',
       infoVoiceMessage: '请填写挂号信息',
-      form: {
+      form: {// 挂号界面
         serialNo: '',
         bookDept: '',
         cardType: '',
@@ -472,7 +503,7 @@ export default {
         }
       ],
       dialogFormVisible: false,
-      dialogForm: {
+      dialogForm: {// 挂号单
         bookNo: '',
         patientNo: '',
         name: '',
@@ -498,6 +529,10 @@ export default {
       },
       medicines: [
         {
+          value: '无',
+          label: '无'
+        },
+        {
           value: '抗生素类药物',
           label: '抗生素类药物'
         },
@@ -520,6 +555,10 @@ export default {
         {
           value: '血清制剂',
           label: '血清制剂'
+        },
+        {
+          value: '其他',
+          label: '其他'
         }
       ],
       nations: [
@@ -527,16 +566,51 @@ export default {
           value: '汉族',
           label: '汉族'
         }
-      ]
+      ],
+      registerFormRules: {
+        cardType: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        cardNo: [
+          { validator: cardNoValidate, trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '必填', trigger: 'blur' }
+        ],
+        birthday: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        sex: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        allergy: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        nation: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        address: [
+          { required: true, message: '必填', trigger: 'blur' }
+        ],
+        phone: [
+          {validator: phoneValidate, trigger: 'blur'}
+        ]
+      }
     }
   },
   methods: {
+    emptyForm (obj) {
+      for (let key in obj) {
+        obj[key] = ''
+      }
+    },
     selfBook () {
       this.showPage = 2
       voicePlay(this.deptVoiceMessage)
     },
-    selfRegister () {
+    selfRegister (registerForm) {
       this.showPage = 4
+      this.emptyForm(registerForm)
       voicePlay(this.registerVoiceMessage)
     },
     selfQuery () {
@@ -559,7 +633,24 @@ export default {
       this.dialogFormVisible = false
       this.showPage = 1
     },
-    confirmRegister () {
+    confirmRegister (registerForm) {
+      this.$refs['registerForm'].validate((valid) => {
+        if (valid) {
+          patientRegister(registerForm).then((response) => {
+            if (response.code === 200) {
+              this.$message.success('注册成功')
+              this.showPage = 1
+            } else {
+              this.$message.error(response.message)
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    cancelRegisterForm () {
+      this.$refs['registerForm'].resetFields()
       this.showPage = 1
     }
   }
