@@ -23,7 +23,7 @@ Vue.prototype.$axios = axios // 将axios挂载在Vue实例原型上
 // axios.defaults.baseURL = 'http://localhost:54184/'
 // axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded' // 配置请求头（推荐）
-axios.defaults.withCredentials = true // axios 默认不发送cookie，需要全局设置true发送cookie
+// axios.defaults.withCredentials = true // axios 默认不发送cookie，需要全局设置true发送cookie
 
 Vue.use(ElementUI)
 

@@ -127,6 +127,7 @@
 
 <script>
 import {checkOldPassword, updatePassword} from '../../api/layout'
+import {logout} from '../../api/login'
 
 export default {
   name: 'Layout',
@@ -135,12 +136,13 @@ export default {
       if (value === '') {
         callback(new Error('请输入旧密码'))
       } else {
-        var flag = checkOldPassword
-        if (!flag) {
-          callback(new Error('旧密码不正确'))
-        } else {
-          callback()
-        }
+        checkOldPassword(this.$store.getters.jobNumber).then((response) => {
+          if (response.code === '200') {
+            callback()
+          } else {
+            callback(new Error(response.message))
+          }
+        })
       }
     }
     const validatePass = (rule, value, callback) => {
@@ -165,6 +167,7 @@ export default {
     return {
       pwdDialogVisible: false,
       updatePwdForm: {
+        jobNumber: '',
         oldPwd: '',
         newPwd: '',
         confirmPwd: '',
@@ -281,22 +284,32 @@ export default {
     this.userRole = this.$store.getters.roles
   },
   methods: {
+    /* 修改用户密码 完成后重新登录 */
     updatePwd (formInfo) {
       this.$refs['updatePwdForm'].validate((valid) => {
         if (valid) {
           var result = updatePassword(formInfo)
           if (result.code === '200') {
             this.$message.success('修改成功，请重新登录')
+            this.cancelPwd()
+            logout(this.$store.getters.jobNumber).then((response) => {
+              if (response.code === '200') {
+                this.$router.push({path: '/login'})
+              } else {
+                this.$message.error(response.message)
+              }
+            })
           } else {
             this.$message.error(result.message)
           }
         } else {
-
+          return false
         }
       })
     },
     cancelPwd () {
-
+      this.$refs['updatePwdForm'].resetFields()
+      this.pwdDialogVisible = false
     },
     hiddenMenuCommand (command) {
       var param = null
@@ -341,11 +354,20 @@ export default {
       switch (key) {
         case 'editPwd':
           this.updatePwdForm.jobNumber = this.$store.getters.jobNumber
+          this.updatePwdForm.confirmPwd = ''
+          this.updatePwdForm.newPwd = ''
+          this.updatePwdForm.oldPwd = ''
           this.pwdDialogVisible = true
           break
         case 'logout':
-
-          ;break
+          logout(this.$store.getters.jobNumber).then((response) => {
+            if (response.code === '200') {
+              this.$router.push({path: '/login'})
+            } else {
+              this.$message.error(response.message)
+            }
+          })
+          break
       }
     },
     menuSelect (index, indexPath) {
