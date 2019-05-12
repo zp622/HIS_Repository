@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 export const loginPath = '/api/User/userLogin'
-export const logoutPath = '/api/User/exit'
+export const logoutPath = '/api/User/exitLogin'
 export function loginByUsername (username, password) {
   return request({
     url: loginPath,
@@ -20,7 +20,7 @@ export function logout (jobNumber) {
     url: logoutPath,
     method: 'post',
     data: {
-      '': jobNumber
+      'jobNumber': jobNumber
     }
   })
 }
