@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
-export const checkOldPasswordPath = '/api/'
-export const updatePasswordPath = '/api/'
+export const checkOldPasswordPath = '/api/User/validatePwd'
+export const updatePasswordPath = '/api/User/updPwd'
 
 // 修改密码时，校验输入的旧密码是否正确
 export function checkOldPassword (jobNumber, oldPassword) {

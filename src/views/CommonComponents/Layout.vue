@@ -136,8 +136,9 @@ export default {
       if (value === '') {
         callback(new Error('请输入旧密码'))
       } else {
-        checkOldPassword(this.$store.getters.jobNumber).then((response) => {
-          if (response.code === '200') {
+        debugger
+        checkOldPassword(this.$store.getters.jobNumber, this.updatePwdForm.oldPwd).then((response) => {
+          if (response.code === 200) {
             callback()
           } else {
             callback(new Error(response.message))
@@ -288,20 +289,21 @@ export default {
     updatePwd (formInfo) {
       this.$refs['updatePwdForm'].validate((valid) => {
         if (valid) {
-          var result = updatePassword(formInfo)
-          if (result.code === '200') {
-            this.$message.success('修改成功，请重新登录')
-            this.cancelPwd()
-            logout(this.$store.getters.jobNumber).then((response) => {
-              if (response.code === '200') {
-                this.$router.push({path: '/login'})
-              } else {
-                this.$message.error(response.message)
-              }
-            })
-          } else {
-            this.$message.error(result.message)
-          }
+          updatePassword(formInfo).then((response) => {
+            if (response.code === 200) {
+              this.$message.success('修改成功，请重新登录')
+              this.cancelPwd()
+              logout(this.$store.getters.jobNumber).then((res) => {
+                if (res.code === 200) {
+                  this.$router.push({path: '/login'})
+                } else {
+                  this.$message.error(res.message)
+                }
+              })
+            } else {
+              this.$message.error(response.message)
+            }
+          })
         } else {
           return false
         }
@@ -361,7 +363,7 @@ export default {
           break
         case 'logout':
           logout(this.$store.getters.jobNumber).then((response) => {
-            if (response.code === '200') {
+            if (response.code === 200) {
               this.$router.push({path: '/login'})
             } else {
               this.$message.error(response.message)
