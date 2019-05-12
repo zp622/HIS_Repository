@@ -72,23 +72,23 @@
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div @click="deptSelect('')">内科</div>
+              <div @click="deptSelect(form, '内科')">内科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div @click="deptSelect('surgery')">外科</div>
+              <div @click="deptSelect(form, '外科')">外科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div @click="deptSelect('child')">儿科</div>
+              <div @click="deptSelect(form, '儿科')">儿科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div @click="deptSelect('gynaecology')">妇产科</div>
+              <div @click="deptSelect(form, '妇产科')">妇产科</div>
             </el-card>
           </el-col>
         </el-row>
@@ -96,23 +96,23 @@
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div @click="deptSelect('stomatology')">口腔科</div>
+              <div @click="deptSelect(form, '口腔科')">口腔科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div @click="deptSelect('ent')">耳鼻喉科</div>
+              <div @click="deptSelect(form, '耳鼻喉科')">耳鼻喉科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card
               class="box-card">
-              <div @click="deptSelect('eye')">眼科</div>
+              <div @click="deptSelect(form, '眼科')">眼科</div>
             </el-card>
           </el-col>
           <el-col :span="6">
             <el-card class="box-card">
-              <div @click="deptSelect('more')">
+              <div @click="deptSelect(form, 'more')">
                 更多科室
                 <i class="fa fa-chevron-right" aria-hidden="true"></i>
               </div>
@@ -137,10 +137,10 @@
           {{this.infoVoiceMessage}}
         </div>
         <div class="formDiv">
-          <el-form ref="form" :model="form" label-width="80px">
+          <el-form ref="form" :model="form" label-width="80px" :rules="formRules">
             <el-row>
             <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-              <el-form-item label="证件类型" class="label">
+              <el-form-item label="证件类型" class="label" prop="cardType">
                 <el-select class="formInput" v-model="form.cardType">
                   <el-option
                     v-for="item in cardTypes"
@@ -153,18 +153,20 @@
             </el-col>
             <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
               <el-form-item label="挂号科室" class="label">
-                <el-input class="formInput" v-model="form.bookDept"></el-input>
+                <el-input class="formInput" v-model="form.bookDept" disabled="disabled"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件号码" class="label">
-                  <el-input class="formInput" v-model="form.cardNo"></el-input>
+                <el-form-item label="证件号码" class="label" prop="cardNo">
+                  <el-input class="formInput" v-model="form.cardNo"
+                            :disabled="form.cardType!==''?false:true"
+                            oninput = "value=value.replace(/[^\w]/ig,'')"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="挂号时间" class="label">
+                <el-form-item label="挂号时间" class="label" required>
                   <el-col :span="11">
                     <el-date-picker class="formInput" type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
                   </el-col>
@@ -185,12 +187,12 @@
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
                 <el-form-item label="姓名" class="label">
-                  <el-input class="formInput" v-model="form.name"></el-input>
+                  <el-input class="formInput" v-model="form.name" disabled="disabled"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="挂号类别" class="label">
-                  <el-select class="formInput" v-model="form.bookType">
+                <el-form-item label="挂号类别" class="label" prop="bookType">
+                  <el-select class="formInput" v-model="form.bookType" @change="bookTypeChange">
                     <el-option
                       v-for="item in bookTypes"
                       :label="item.label"
@@ -203,13 +205,13 @@
             </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="手机号码" class="label">
-                  <el-input class="formInput" v-model="form.phone"></el-input>
+                <el-form-item label="手机号码" class="label" prop="phone">
+                  <el-input class="formInput" v-model="form.phone" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
-                <el-form-item label="选择医生" class="label">
-                  <el-select class="formInput" v-model="form.doctor">
+                <el-form-item label="选择医生" class="label" prop="doctor">
+                  <el-select :disabled="form.bookType==='普通号'?true:false" class="formInput" v-model="form.doctor">
                     <el-option
                       v-for="item in doctors"
                       :label="item.label"
@@ -223,7 +225,7 @@
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
                 <el-form-item label="性别" class="label">
-                  <el-input class="formInput" v-model="form.sex"></el-input>
+                  <el-input class="formInput" v-model="form.sex" disabled="disabled"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
@@ -408,6 +410,7 @@
 <script>
 import {voicePlay, validateMobile, validatePhone, validateIDcard} from '../../utils'
 import {patientRegister} from '../../api/patientRegister'
+import {cardNoCheck, selectDoctorList, bookingForm} from '../../api/bookingForm'
 
 export default {
   name: 'SelfBookForm',
@@ -436,12 +439,34 @@ export default {
         callback()
       }
     }
+    const bookCardNoValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else {
+        cardNoCheck(this.form.cardNo).then((response) => {
+          if (response.code === 200) {
+            var result = response.data
+            this.form.name = result.name
+            this.form.phone = result.phone
+            this.form.sex = result.sex
+            this.form.patientNo = result.patientNo
+            callback()
+          } else {
+            this.$message.error({
+              message: '当前用户不存在，请先注册',
+              duration: 5000
+            })
+            voicePlay('当前用户不存在，请先注册')
+            callback(new Error())
+          }
+        })
+      }
+    }
     return {
       showPage: 1,
       deptVoiceMessage: '请选择就诊科室',
       infoVoiceMessage: '请填写挂号信息',
       form: {// 挂号界面
-        serialNo: '',
         bookDept: '',
         cardType: '',
         cardNo: '',
@@ -453,6 +478,26 @@ export default {
         bookDate: '',
         bookTime: '',
         protocol: ''
+      },
+      formRules: {
+        cardType: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        cardNo: [
+          {validator: bookCardNoValidate, trigger: 'blur'}
+        ],
+        phone: [
+          {validator: phoneValidate, trigger: 'blur'}
+        ],
+        bookType: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        bookDate: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        bookTime: [
+          { required: true, message: '必填', trigger: 'change' }
+        ]
       },
       cardTypes: [
         {
@@ -504,6 +549,7 @@ export default {
       ],
       dialogFormVisible: false,
       dialogForm: {// 挂号单
+        serialNo: '',
         bookNo: '',
         patientNo: '',
         name: '',
@@ -525,7 +571,8 @@ export default {
         allergy: '',
         nation: '',
         address: '',
-        phone: ''
+        phone: '',
+        creator: this.$store.getters.jobNumber
       },
       medicines: [
         {
@@ -599,44 +646,77 @@ export default {
     }
   },
   methods: {
+    /* 根据挂号类型的不同，判断是否需要查询医生名单 */
+    bookTypeChange (val) {
+      if (val === '普通号') {
+        this.form.doctor = ''
+      } else {
+        selectDoctorList(this.form).then((response) => {
+          if (response.code === 200) {
+            // var result = response.data
+          //  数据类型  如何存取 给doctor赋值 给option赋值
+          } else {
+
+          }
+        })
+      }
+    },
+    /* 初始化清空表单数据 */
     emptyForm (obj) {
       for (let key in obj) {
         obj[key] = ''
       }
     },
+    /* 自助挂号入口 */
     selfBook () {
       this.showPage = 2
       voicePlay(this.deptVoiceMessage)
     },
+    /* 自助注册入口 初始化表单数据 */
     selfRegister (registerForm) {
       this.showPage = 4
       this.emptyForm(registerForm)
       voicePlay(this.registerVoiceMessage)
     },
-    selfQuery () {
-
-    },
-    accountManage () {
-
-    },
-    selfCharge () {
-
-    },
-    deptSelect (deptType) {
+    selfQuery () {},
+    accountManage () {},
+    selfCharge () {},
+    /* 进入挂号信息填写界面 初始化表单 */
+    deptSelect (form, deptType) {
       this.showPage = 3
+      this.emptyForm(form)
+      this.form.bookDept = deptType
       voicePlay(this.infoVoiceMessage)
     },
+    /* 确认挂号 */
     confirmBookForm () {
-      this.dialogFormVisible = true
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          bookingForm(this.form).then((response) => {
+            if (response.code === 200) {
+              this.$message.success('挂号成功')
+              this.dialogFormVisible = true
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    /* 生成的挂号单的赋值 */
+    valueToDialogForm () {
+
     },
     dialogFormConfirm () {
       this.dialogFormVisible = false
       this.showPage = 1
     },
+    /* 确认注册 */
     confirmRegister (registerForm) {
+      this.registerForm.creator = this.$store.getters.jobNumber
       this.$refs['registerForm'].validate((valid) => {
         if (valid) {
-          patientRegister(registerForm).then((response) => {
+          patientRegister(this.registerForm).then((response) => {
             if (response.code === 200) {
               this.$message.success('注册成功')
               this.showPage = 1
@@ -701,12 +781,23 @@ export default {
       .el-select{
         width:100%;
       }
-
+      .el-input.is-disabled .el-input__inner {
+        background-color: #f5f7fa5e;
+        border-color: #E4E7ED;
+        color: #ffffff;
+        cursor: not-allowed;
+      }
     }
     /*自助注册页面*/
     #pagefour{
       .el-select{
         width:100%;
+      }
+      .el-input.is-disabled .el-input__inner {
+        background-color: #f5f7fa5e;
+        border-color: #E4E7ED;
+        color: #ffffff;
+        cursor: not-allowed;
       }
     }
   }

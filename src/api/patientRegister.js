@@ -1,6 +1,7 @@
 import request from '@/utils/request'
+import {formatDate} from '../utils'
 
-export const patientRegisterPath = '/api/User/userLogin'
+export const patientRegisterPath = '/api/Patient/addPatient'
 
 export function patientRegister (formInfo) {
   return request({
@@ -11,10 +12,11 @@ export function patientRegister (formInfo) {
       cardId: formInfo.cardNo,
       name: formInfo.name,
       sex: formInfo.sex,
-      birthday: formInfo.birthday,
+      birthday: formatDate(formInfo.birthday),
       phone: formInfo.phone,
       address: formInfo.address,
       allergyMedicine: formInfo.allergy,
+      creator: formInfo.creator,
       famous: formInfo.nation
     },
     params: {}
