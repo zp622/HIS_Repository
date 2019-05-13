@@ -11,14 +11,6 @@
               type="date"
               :picker-options="pickerOptions1">
             </el-date-picker>
-            <!--<el-select v-model="queryForm.cardType">
-              <el-option
-                v-for="item in cardTypes"
-                :label="item.label"
-                :value="item.value"
-                :disabled="item.disabled"
-                :key="item.value"></el-option>
-            </el-select>-->
           </el-form-item>
         </el-col>
         <el-col :span="8">

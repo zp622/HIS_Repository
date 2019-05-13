@@ -1,3 +1,4 @@
+/* 文本转语音 */
 export function voicePlay (text) {
   var speechSU = new window.SpeechSynthesisUtterance()
   speechSU.text = text
@@ -16,9 +17,26 @@ export function validatePhone (str) {
   return phone.test(str)
 }
 
+/* 挂号时校验患者的身份信息是否已存在 */
 export function validateIDcard (str) {
   var IDcard = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/
   return IDcard.test(str)
+}
+
+/* 格式化挂号时间 ‘2019-05-13 上午’ */
+export function formatDateForBook (date, noon) {
+  var seperator = '-'
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1
+  var strDate = date.getDate()
+  if (month >= 1 && month <= 9) {
+    month = '0' + month
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = '0' + strDate
+  }
+  var formatDateForBook = year + seperator + month + seperator + strDate + ' ' + noon
+  return formatDateForBook
 }
 
 export function getFormatDate (date) {
@@ -49,6 +67,7 @@ export function getFormatDate (date) {
 }
 /* 格式化年月日 20180201 */
 export function formatDate (date) {
+  debugger
   var year = date.getFullYear()
   var month = date.getMonth() + 1
   var strDate = date.getDate()

@@ -477,6 +477,7 @@ export default {
         doctor: '',
         bookDate: '',
         bookTime: '',
+        creator: '',
         protocol: ''
       },
       formRules: {
@@ -692,10 +693,13 @@ export default {
     confirmBookForm () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          this.form.creator = this.$store.getters.jobNumber
           bookingForm(this.form).then((response) => {
             if (response.code === 200) {
               this.$message.success('挂号成功')
               this.dialogFormVisible = true
+            } else {
+              this.$message.error(response.message)
             }
           })
         } else {

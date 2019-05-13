@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import {formatDateForBook} from '../utils'
 
 export const cardNoCheckPath = '/api/User/'
 export const bookingFormPath = '/api/User/'
@@ -21,12 +22,16 @@ export function bookingForm (formInfo) {
     url: bookingFormPath,
     method: 'post',
     data: {
-      registerNo: '',
+      registerNo: '', // query
+      waitingNo: '', // query
+      address: '', // query
       patientNo: formInfo.patientNo,
       registerFee: '10元',
       registerType: formInfo.bookType,
       refisterDept: formInfo.bookDept,
-      creator: this.$store.getters.jobNumber
+      doctor: formInfo.doctor,
+      registerTime: formatDateForBook(formInfo.bookDate, formInfo.bookTime),
+      creator: ''
     }
   })
 }
