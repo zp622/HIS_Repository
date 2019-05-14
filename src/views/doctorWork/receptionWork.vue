@@ -55,8 +55,20 @@
       <el-table-column prop="REGISTER_TYPE" label="挂号种类" min-width="60" align="center"></el-table-column>
       <el-table-column prop="REGISTER_DEPARTMENT" label="挂号科室" min-width="60" align="center"></el-table-column>
       <el-table-column prop="WAITING_NO" label="当日排号位" min-width="60" align="center"></el-table-column>
-      <el-table-column label="病历" min-width="30" align="center"></el-table-column>
-      <el-table-column label="就诊状态" min-width="60" align="center"></el-table-column>
+      <el-table-column label="病历" min-width="30" align="center">
+        <template slot-scope="scope">
+          <a href="#" @click="writeRecord">填写</a>
+        </template>
+      </el-table-column>
+      <el-table-column prop="processStatus" label="就诊状态" min-width="60" align="center">
+        <template slot-scope="scope">
+          <el-select v-model="scope.row.processStatus" size="small">
+            <el-option value="待处理" label="待处理"></el-option>
+            <el-option value="接诊中" label="接诊中"></el-option>
+            <el-option value="已完成" label="已完成"></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </div>
@@ -98,7 +110,11 @@ export default {
         patientNo: ''
       },
       currentPage: 1,
-      bookFormData: []
+      bookFormData: [
+        {
+          REGISTER_NO: '201808210021'
+        }
+      ]
     }
   },
   created () {
@@ -109,6 +125,9 @@ export default {
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
+    },
+    writeRecord () {
+
     }
   }
 }
