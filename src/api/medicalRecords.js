@@ -1,6 +1,21 @@
 import request from '@/utils/request'
 
 export const editRecordsInfoPath = '/'
+export const addRecordsInfoPath = '/api/MedicalRecord/addRecord'
+
+/* 新增病历信息 */
+export function addRecordsInfo (formInfo) {
+  return request({
+    url: addRecordsInfoPath,
+    method: 'post',
+    data: {
+      patientNo: formInfo.patientNo,
+      registerNo: formInfo.bookNo,
+      creator: formInfo.creator
+    },
+    params: {}
+  })
+}
 
 /* 填写病历信息 修改 */
 export function editRecordsInfo (formInfo) {

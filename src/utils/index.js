@@ -67,7 +67,6 @@ export function getFormatDate (date) {
 }
 /* 格式化年月日 20180201 */
 export function formatDate (date) {
-  debugger
   var year = date.getFullYear()
   var month = date.getMonth() + 1
   var strDate = date.getDate()

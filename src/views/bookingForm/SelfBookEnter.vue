@@ -231,13 +231,13 @@
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="">
                   <el-checkbox-group v-model="form.protocol">
-                    <el-checkbox><a href="#" style="color: #05ff05;font-family: 宋体">同意网上预约挂号协议</a></el-checkbox>
+                    <el-checkbox><a href="#" :style="{color:form.protocol?'#05ff05':'grey'}" style="font-family: 宋体;">同意网上预约挂号协议</a></el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-form-item class="formBtn">
-              <el-button type="primary" @click="confirmBookForm">挂号</el-button>
+              <el-button type="primary" @click="confirmBookForm" :disabled="form.protocol?false:true">挂号</el-button>
               <el-button @click="showPage=1">取消</el-button>
             </el-form-item>
           </el-form>
@@ -250,49 +250,51 @@
       </el-main>
     </el-container>
 
-    <el-dialog title="挂号单信息" :visible.sync="dialogFormVisible">
-      <el-form :model="dialogForm"  label-width="180px">
-        <el-form-item label="挂号单编号">
-          <span>{{dialogForm.bookNo}}</span>
-        </el-form-item>
-        <el-form-item label="当日排号位">
-          <span>{{dialogForm.serialNo}}</span>
-        </el-form-item>
-        <el-form-item label="病人编号">
-          <span>{{dialogForm.patientNo}}</span>
-        </el-form-item>
-        <el-form-item label="日期">
-          <span>{{dialogForm.date}}</span>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <span>{{dialogForm.name}}</span>
-        </el-form-item>
-        <el-form-item label="性别">
-          <span>{{dialogForm.sex}}</span>
-        </el-form-item>
-        <el-form-item label="挂号类别">
-          <span>{{dialogForm.type}}</span>
-        </el-form-item>
-        <el-form-item label="医生">
-          <span>{{dialogForm.doctor}}</span>
-        </el-form-item>
-        <el-form-item label="排号时间">
-          <span>{{dialogForm.bookTime}}</span>
-        </el-form-item>
-        <el-form-item label="就诊地点">
-          <span>{{dialogForm.address}}</span>
-        </el-form-item>
-        <el-form-item label="金额">
-          <span>{{dialogForm.money}}</span>
-        </el-form-item>
-        <el-form-item>
-          <span>注：此凭条当日有效，过号作废。</span>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogFormConfirm">确 定</el-button>
-      </div>
-    </el-dialog>
+    <div id="dia">
+      <el-dialog :show-close=false :close-on-press-escape=false :close-on-click-modal=false top="0vh" title="挂号单信息" :visible.sync="dialogFormVisible">
+        <el-form :model="dialogForm"  label-width="180px">
+          <el-form-item label="挂号单编号：">
+            <span>{{dialogForm.bookNo}}</span>
+          </el-form-item>
+          <el-form-item label="当日排号：">
+            <span style="color: red;">{{dialogForm.serialNo}}</span>
+          </el-form-item>
+          <el-form-item label="病人编号：">
+            <span>{{dialogForm.patientNo}}</span>
+          </el-form-item>
+          <el-form-item label="日期：">
+            <span>{{dialogForm.date}}</span>
+          </el-form-item>
+          <el-form-item label="姓名：">
+            <span>{{dialogForm.name}}</span>
+          </el-form-item>
+          <el-form-item label="性别：">
+            <span>{{dialogForm.sex}}</span>
+          </el-form-item>
+          <el-form-item label="挂号类别：">
+            <span>{{dialogForm.type}}</span>
+          </el-form-item>
+          <el-form-item label="医生：">
+            <span>{{dialogForm.doctor}}</span>
+          </el-form-item>
+          <el-form-item label="排号时间：">
+            <span>{{dialogForm.bookTime}}</span>
+          </el-form-item>
+          <el-form-item label="就诊地点：">
+            <span>{{dialogForm.address}}</span>
+          </el-form-item>
+          <el-form-item label="金额：">
+            <span>{{dialogForm.money}}</span>
+          </el-form-item>
+          <el-form-item>
+            <span>注：此凭条当日有效，过号作废。</span>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogFormConfirm">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
   <div id="pagefour" v-show="showPage===4">
     <el-container>
@@ -411,6 +413,7 @@
 import {voicePlay, validateMobile, validatePhone, validateIDcard} from '../../utils'
 import {patientRegister} from '../../api/patientRegister'
 import {cardNoCheck, selectDoctorList, bookingForm, queryResidualNumber} from '../../api/bookingForm'
+import {addRecordsInfo} from '../../api/medicalRecords'
 
 export default {
   name: 'SelfBookForm',
@@ -682,7 +685,7 @@ export default {
       this.bookingCount = null
       this.doctorCount = null
       this.form.doctor = ''
-      this.form.doctors = []
+      this.doctors = []
       if (val === '普通号') {
         queryResidualNumber(this.form).then((response) => {
           if (response.code === 200) {
@@ -752,6 +755,7 @@ export default {
     deptSelect (form, deptType) {
       this.showPage = 3
       this.emptyForm(form)
+      this.$refs['form'].resetFields()
       this.form.bookDept = deptType
       voicePlay(this.infoVoiceMessage)
     },
@@ -770,11 +774,14 @@ export default {
             bookingForm(this.form).then((response) => {
               if (response.code === 200) {
                 this.$message.success('挂号成功')
+                var result = response.data[0]
+                this.valueToDialogForm(result)
                 this.dialogFormVisible = true
               } else {
                 this.$message.error(response.message)
               }
             })
+            this.dialogFormVisible = true
           }
         } else {
           return false
@@ -782,12 +789,30 @@ export default {
       })
     },
     /* 生成的挂号单的赋值 */
-    valueToDialogForm () {
-
+    valueToDialogForm (result) {
+      this.dialogForm.serialNo = result.waitingNo
+      this.dialogForm.bookNo = result.registerNo
+      this.dialogForm.patientNo = result.patientNo
+      this.dialogForm.name = result.patientName
+      this.dialogForm.date = result.createTime
+      this.dialogForm.sex = this.form.sex
+      this.dialogForm.bookTime = result.registerTime
+      this.dialogForm.money = result.registerFee
+      this.dialogForm.doctor = result.doctor
+      this.dialogForm.address = result.address
+      this.dialogForm.type = result.registerType
+      this.dialogForm.creator = this.$store.getters.jobNumber
     },
     dialogFormConfirm () {
-      this.dialogFormVisible = false
-      this.showPage = 1
+      addRecordsInfo(this.dialogForm).then((response) => {
+        if (response.code === 200) {
+          console.log('病历信息新增成功')
+          this.dialogFormVisible = false
+          this.showPage = 1
+        } else {
+          console.log('病历信息新增失败')
+        }
+      })
     },
     /* 确认注册 */
     confirmRegister (registerForm) {
@@ -931,5 +956,13 @@ export default {
   /*解决form表单中按钮位置偏移的问题*/
   .formBtn .el-form-item__content{
     margin-left: 0px!important;
+  }
+
+  /*解决挂号单内容里的表单的item外边距过大，内容剧中的问题*/
+  #dia .el-form-item{
+    margin-bottom: 4px;
+  }
+  #dia .el-form-item__content{
+    text-align: left;
   }
 </style>
