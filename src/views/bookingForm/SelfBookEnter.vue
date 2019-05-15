@@ -159,7 +159,7 @@
           </el-row>
             <el-row>
               <el-col :span="12" style="padding-left: 10%;padding-right: 2%">
-                <el-form-item label="证件号码" class="label" prop="cardNo">
+                <el-form-item status-icon label="证件号码" class="label" prop="cardNo">
                   <el-input class="formInput" v-model="form.cardNo"
                             :disabled="form.cardType!==''?false:true"
                             oninput = "value=value.replace(/[^\w]/ig,'')"></el-input>
@@ -192,7 +192,7 @@
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="挂号类别" class="label" prop="bookType">
-                  <el-select class="formInput" v-model="form.bookType" @change="bookTypeChange">
+                  <el-select :disabled="(form.bookDate!=='' && form.bookTime!=='')?false:true" class="formInput" v-model="form.bookType" @change="bookTypeChange">
                     <el-option
                       v-for="item in bookTypes"
                       :label="item.label"
@@ -211,13 +211,13 @@
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="选择医生" class="label" prop="doctor">
-                  <el-select :disabled="form.bookType==='普通号'?true:false" class="formInput" v-model="form.doctor">
+                  <el-select @change="doctorChange" :disabled="form.bookType==='普通号'?true:false" class="formInput" v-model="form.doctor">
                     <el-option
                       v-for="item in doctors"
-                      :label="item.label"
-                      :value="item.value"
+                      :label="item.name"
+                      :value="item.jobNumber"
                       :disabled="item.disabled"
-                      :key="item.value"></el-option>
+                      :key="item.jobNumber"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -410,7 +410,7 @@
 <script>
 import {voicePlay, validateMobile, validatePhone, validateIDcard} from '../../utils'
 import {patientRegister} from '../../api/patientRegister'
-import {cardNoCheck, selectDoctorList, bookingForm} from '../../api/bookingForm'
+import {cardNoCheck, selectDoctorList, bookingForm, queryResidualNumber} from '../../api/bookingForm'
 
 export default {
   name: 'SelfBookForm',
@@ -443,9 +443,9 @@ export default {
       if (value === '') {
         callback(new Error('必填'))
       } else {
-        cardNoCheck(this.form.cardNo).then((response) => {
-          if (response.code === 200) {
-            var result = response.data
+        cardNoCheck(this.form).then((response) => {
+          if (response.code === 200 && response.data.length > 0) {
+            var result = response.data[0]
             this.form.name = result.name
             this.form.phone = result.phone
             this.form.sex = result.sex
@@ -460,6 +460,30 @@ export default {
             callback(new Error())
           }
         })
+      }
+    }
+    /* const bookTypeValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else if (value === '普通号') {
+        if (this.bookingCount >= 20) {
+          callback(new Error('普通号已满，请更换'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    } */
+    const doctorValidate = (rule, value, callback) => {
+      if (this.form.bookType === '普通号') {
+        callback()
+      } else {
+        if (value === '') {
+          callback(new Error('必填'))
+        } else {
+          callback()
+        }
       }
     }
     return {
@@ -478,9 +502,13 @@ export default {
         bookDate: '',
         bookTime: '',
         creator: '',
-        protocol: ''
+        protocol: '',
+        patientNo: ''
       },
       formRules: {
+        doctor: [
+          {validator: doctorValidate, trigger: 'change'}
+        ],
         cardType: [
           { required: true, message: '必填', trigger: 'change' }
         ],
@@ -529,14 +557,14 @@ export default {
         }
       ],
       doctors: [
-        {
-          value: '白求恩',
-          label: '白求恩'
+        /* {
+          jobNumber: '白求恩',
+          name: '白求恩'
         },
         {
-          value: '张建宁',
-          label: '张建宁'
-        }
+          jobNumber: '张建宁',
+          name: '张建宁'
+        } */
       ],
       bookTimes: [
         {
@@ -643,24 +671,62 @@ export default {
         phone: [
           {validator: phoneValidate, trigger: 'blur'}
         ]
-      }
+      },
+      bookingCount: '',
+      doctorCount: ''
     }
   },
   methods: {
     /* 根据挂号类型的不同，判断是否需要查询医生名单 */
     bookTypeChange (val) {
+      this.bookingCount = null
+      this.doctorCount = null
+      this.form.doctor = ''
+      this.form.doctors = []
       if (val === '普通号') {
-        this.form.doctor = ''
+        queryResidualNumber(this.form).then((response) => {
+          if (response.code === 200) {
+            this.bookingCount = response.data// 说明挂号有剩余 data为已挂号数量
+            /* this.$message.success({
+              message: response.message,
+              duration: 20000
+            }) */
+          } else {
+            /* this.$message.error({
+              message: response.message,
+              duration: 20000
+            }) */
+          }
+        })
       } else {
         selectDoctorList(this.form).then((response) => {
           if (response.code === 200) {
-            // var result = response.data
+            this.doctors = response.data
           //  数据类型  如何存取 给doctor赋值 给option赋值
           } else {
-
+            this.$message.error(response.message)
           }
         })
       }
+    },
+    /* 医生挂号剩余的查询 */
+    doctorChange () {
+      this.doctorCount = null
+      queryResidualNumber(this.form).then((response) => {
+        if (response.code === 200) {
+          this.doctorCount = response.data// 说明挂号有剩余 data为已挂号数量
+          /* this.$message.success({
+            message: response.message,
+            duration: 20000
+          }) */
+        } else {
+          this.doctorCount = response.data
+          /* this.$message.error({
+            message: response.message,
+            duration: 20000
+          }) */
+        }
+      })
     },
     /* 初始化清空表单数据 */
     emptyForm (obj) {
@@ -693,15 +759,23 @@ export default {
     confirmBookForm () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.form.creator = this.$store.getters.jobNumber
-          bookingForm(this.form).then((response) => {
-            if (response.code === 200) {
-              this.$message.success('挂号成功')
-              this.dialogFormVisible = true
-            } else {
-              this.$message.error(response.message)
-            }
-          })
+          if (this.bookingCount >= 20) {
+            this.$message.error('该条件下普通号已满')
+            return false
+          } else if (this.doctorCount >= 20) {
+            this.$message.error('该条件下的当前医师的挂号已满')
+            return false
+          } else {
+            this.form.creator = this.$store.getters.jobNumber
+            bookingForm(this.form).then((response) => {
+              if (response.code === 200) {
+                this.$message.success('挂号成功')
+                this.dialogFormVisible = true
+              } else {
+                this.$message.error(response.message)
+              }
+            })
+          }
         } else {
           return false
         }

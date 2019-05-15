@@ -32,35 +32,37 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="100"
+        :page-sizes="[5, 10, 20, 30]"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
     </div>
     <div style="display: inline-block;float: right;">
-      <el-button type="success" size="small">查询</el-button>
-      <el-button type="success" size="small">呼叫下一个</el-button>
+      <el-button type="success" size="small" @click="queryTableData(queryForm,currentPage,pageSize)">查询</el-button>
+      <el-button type="success" size="small" :disabled="multiplySelection.length===1?false:true" @click="callNext">呼叫</el-button>
+      <el-input v-model="deptNo" title="诊室序号" size="small" style="display: inline-block;width: 50px;"></el-input>
     </div>
     <div style="clear:both"></div>
   </div>
   <div>
-    <el-table :data="bookFormData" height="250" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange" :data="bookFormData" height="250" border style="width: 100%">
+      <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column type="index" width="35"></el-table-column>
-      <el-table-column prop="REGISTER_NO" label="挂号单编号" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="PATIENT_NO" label="患者编号" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="PATIENT_NAME" label="姓名" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="PATIENT_SEX" label="性别" min-width="30" align="center"></el-table-column>
-      <el-table-column prop="PATIENT_AGE" label="年龄" min-width="30" align="center"></el-table-column>
-      <el-table-column prop="REGISTER_TYPE" label="挂号种类" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="REGISTER_DEPARTMENT" label="挂号科室" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="WAITING_NO" label="当日排号位" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="registerNo" label="挂号单编号" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="patientNo" label="患者编号" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="waitingNo" label="当日排号" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="patientName" label="姓名" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="patientSex" label="性别" min-width="30" align="center"></el-table-column>
+      <el-table-column prop="patientAge" label="年龄" min-width="30" align="center"></el-table-column>
+      <el-table-column prop="registerType" label="挂号种类" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="registerDeptment" label="挂号科室" min-width="60" align="center"></el-table-column>
       <el-table-column label="病历" min-width="30" align="center">
         <template slot-scope="scope">
-          <a href="#" @click="writeRecord">填写</a>
+          <a href="#" @click="writeRecord(scope.row)">填写</a>
         </template>
       </el-table-column>
-      <el-table-column prop="processStatus" label="就诊状态" min-width="60" align="center">
+      <el-table-column prop="status" label="就诊状态" min-width="60" align="center">
         <template slot-scope="scope">
           <el-select v-model="scope.row.processStatus" size="small">
             <el-option value="待处理" label="待处理"></el-option>
@@ -71,18 +73,124 @@
       </el-table-column>
     </el-table>
   </div>
+  <div id="dialogForm">
+    <el-dialog :close-on-click-modal=false top="5vh" width="80%" :visible.sync="recordDialogVisible" title="病历信息">
+      <el-form :model="recordForm" label-width="130px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item prop="registerNo" label="挂号单编号">
+              {{recordForm.registerNo}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="patientNo" label="患者编号">
+              {{recordForm.patientNo}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="patientName" label="患者姓名">
+              {{recordForm.patientName}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+        <el-col :span="8">
+          <el-form-item prop="visitTime" label="就诊时间">
+            <el-date-picker style="width: 100%" size="small" v-model="recordForm.visitTime" type="datetime">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item prop="department" label="就诊科室">
+            <el-select style="width: 100%" size="small" v-model="recordForm.department">
+              <el-option v-for="item in depts"
+                :value="item.value"
+                :label="item.label"
+                :key="item.value"
+              :disabled="item.disabled"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item prop="doctor" label="接诊医生">
+            <el-input size="small" v-model="recordForm.doctor"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item prop="chiefAction" label="主诉">
+              <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.chiefAction"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item prop="presentIllness" label="症状">
+              <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.presentIllness"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item prop="historyIllness" label="既往史">
+              <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.historyIllness"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+        <el-col :span="24">
+          <el-form-item prop="phyExam" label="体检">
+            <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.phyExam"></el-input>
+          </el-form-item>
+        </el-col>
+        </el-row>
+        <el-row>
+        <el-col :span="24">
+          <el-form-item prop="tentDiag" label="初步诊断">
+            <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.tentDiag"></el-input>
+          </el-form-item>
+        </el-col>
+        </el-row>
+        <el-row>
+        <el-col :span="24">
+          <el-form-item prop="trpl" label="治疗意见">
+            <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.trpl"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item prop="auxiExam" label="辅助检查结果">
+              <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.auxiExam"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-button @click="submintRecord" type="primary">提交</el-button>
+            <el-button @click="recordDialogVisible=false">取消</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-dialog>
+  </div>
 </div>
 </template>
 
 <script>
+import {queryBookFormData} from '../../api/bookingForm'
+import {voicePlay} from '../../utils'
+import {editRecordsInfo} from '../../api/medicalRecords'
+
 export default {
   name: 'DoctorWork',
   data () {
     return {
       pickerOptions1: {
-        disabledDate (time) {
+        /* disabledDate (time) {
           return time.getTime() > Date.now()
-        },
+        }, */
         shortcuts: [{
           text: '今天',
           onClick (picker) {
@@ -110,29 +218,111 @@ export default {
         patientNo: ''
       },
       currentPage: 1,
+      pageSize: 10,
+      total: 100,
       bookFormData: [
         {
-          REGISTER_NO: '201808210021'
+          registerNo: '201808210021'
+        }
+      ],
+      multiplySelection: [],
+      deptNo: 3,
+      recordDialogVisible: false,
+      recordForm: {
+        registerNo: '',
+        patientNo: '',
+        patientName: '',
+        visitTime: '',
+        department: '',
+        doctor: '',
+        chiefAction: '',
+        presentIllness: '',
+        historyIllness: '',
+        phyExam: '',
+        tentDiag: '',
+        trpl: '',
+        auxiExam: ''
+      },
+      depts: [
+        {
+          value: '内科',
+          label: '内科'
         }
       ]
     }
   },
   created () {
+    // this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
   },
   methods: {
+    queryTableData (formInfo, currentPage, pageSize) {
+      queryBookFormData(formInfo, currentPage, pageSize).then((response) => {
+        if (response.code === 200) {
+          this.bookFormData = response.data
+          this.total = response.total
+        } else {
+          this.$message.error(response.message)
+        }
+      })
+    },
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.currentPage = val
+      this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
     },
-    writeRecord () {
-
+    writeRecord (row) {
+      this.recordDialogVisible = true
+      this.emptyRecordForm()
+      this.valueToRecordForm(row)
+    },
+    submintRecord () {
+      editRecordsInfo(this.recordForm).then((response) => {
+        if (response.code === 200) {
+          this.recordDialogVisible = false
+        } else {
+          this.$message.error(response.message)
+        }
+      })
+    },
+    valueToRecordForm (row) {
+      this.recordForm.registerNo = row.registerNo
+      this.recordForm.patientNo = row.patientNo
+      this.recordForm.patientName = row.patientName
+      this.recordForm.department = row.department
+    },
+    emptyRecordForm () {
+      this.recordForm.registerNo = ''
+      this.recordForm.patientNo = ''
+      this.recordForm.patientName = ''
+      this.recordForm.visitTime = ''
+      this.recordForm.department = ''
+      this.recordForm.doctor = ''
+      this.recordForm.chiefAction = ''
+      this.recordForm.presentIllness = ''
+      this.recordForm.historyIllness = ''
+      this.recordForm.phyExam = ''
+      this.recordForm.tentDiag = ''
+      this.recordForm.trpl = ''
+      this.recordForm.auxiExam = ''
+    },
+    handleSelectionChange (rows) {
+      this.multiplySelection = rows
+    },
+    callNext () {
+      var No = this.multiplySelection[0].waitingNo
+      var dept = this.multiplySelection[0].registerDepartment
+      var message = '请' + No + '号,前往,' + dept + ',第,' + this.deptNo + ',诊室就诊'
+      voicePlay(message)
     }
   }
 }
 </script>
 
 <style scoped>
-
+#dialogForm .el-form-item{
+  margin-bottom:8px;
+}
 </style>

@@ -23,8 +23,8 @@ export function validateIDcard (str) {
   return IDcard.test(str)
 }
 
-/* 格式化挂号时间 ‘2019-05-13 上午’ */
-export function formatDateForBook (date, noon) {
+/* 格式化挂号时间 ‘2019-05-13’ */
+export function formatDateForBook (date) {
   var seperator = '-'
   var year = date.getFullYear()
   var month = date.getMonth() + 1
@@ -35,7 +35,7 @@ export function formatDateForBook (date, noon) {
   if (strDate >= 0 && strDate <= 9) {
     strDate = '0' + strDate
   }
-  var formatDateForBook = year + seperator + month + seperator + strDate + ' ' + noon
+  var formatDateForBook = year + seperator + month + seperator + strDate
   return formatDateForBook
 }
 
