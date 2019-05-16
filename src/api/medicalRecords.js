@@ -2,6 +2,7 @@ import request from '@/utils/request'
 
 export const editRecordsInfoPath = '/'
 export const addRecordsInfoPath = '/api/MedicalRecord/addRecord'
+export const queryRecordsInfoPath = '/api/MedicalRecord/getRecord'
 
 /* 新增病历信息 */
 export function addRecordsInfo (formInfo) {
@@ -12,6 +13,23 @@ export function addRecordsInfo (formInfo) {
       patientNo: formInfo.patientNo,
       registerNo: formInfo.bookNo,
       creator: formInfo.creator
+    },
+    params: {}
+  })
+}
+
+/* 查询病历信息 */
+export function queryRecordsInfo (formInfo) {
+  var currentPage = 1
+  var pageSize = 1000000
+  var obj = {'patientNo': formInfo.patientNo, 'registerNo': formInfo.registerNo}
+  return request({
+    url: queryRecordsInfoPath,
+    method: 'post',
+    data: {
+      'medicalRecord': obj,
+      'currentPage': currentPage,
+      'pageSize': pageSize
     },
     params: {}
   })
@@ -38,7 +56,7 @@ export function editRecordsInfo (formInfo) {
       tentDiag: formInfo.tentDiag,
       trpl: formInfo.trpl,
       tuxiExam: formInfo.tuxiExam,
-      creator: formInfo.creator
+      updater: formInfo.updater
     },
     params: {}
   })

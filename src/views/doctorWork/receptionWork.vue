@@ -27,7 +27,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="挂号单编号">
-            <el-input size="small" v-model="queryForm.bookDept"></el-input>
+            <el-input size="small" v-model="queryForm.bookNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -74,7 +74,7 @@
       </el-table-column>
       <el-table-column prop="status" label="就诊状态" min-width="60" align="center">
         <template slot-scope="scope">
-          <el-select v-model="scope.row.status" size="small">
+          <el-select v-model="scope.row.status" size="small" @change="editBookInfo(scope.row)">
             <el-option value="待处理" label="待处理"></el-option>
             <el-option value="接诊中" label="接诊中"></el-option>
             <el-option value="已完成" label="已完成"></el-option>
@@ -84,7 +84,7 @@
     </el-table>
   </div>
   <div id="dialogForm">
-    <el-dialog :close-on-click-modal=false top="5vh" width="80%" :visible.sync="recordDialogVisible" title="病历信息">
+    <el-dialog :close-on-click-modal=false top="0vh" width="80%" :visible.sync="recordDialogVisible" title="病历信息">
       <el-form :model="recordForm" label-width="130px">
         <el-row>
           <el-col :span="8">
@@ -189,9 +189,9 @@
 </template>
 
 <script>
-import {queryBookFormData} from '../../api/bookingForm'
+import {queryBookFormData, editBookingForm} from '../../api/bookingForm'
 import {voicePlay} from '../../utils'
-import {editRecordsInfo} from '../../api/medicalRecords'
+import {editRecordsInfo, queryRecordsInfo} from '../../api/medicalRecords'
 
 export default {
   name: 'DoctorWork',
@@ -266,7 +266,6 @@ export default {
     }
   },
   created () {
-    debugger
     var myDate = new Date()
     var strArray = myDate.toLocaleDateString().split('/')
     this.queryForm.date = this.createdDate(strArray)
@@ -323,14 +322,21 @@ export default {
       this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
     },
     writeRecord (row) {
-      this.recordDialogVisible = true
-      this.emptyRecordForm()
-      this.valueToRecordForm(row)
+      queryRecordsInfo(row).then((response) => {
+        if (response.code === 200) {
+          this.recordDialogVisible = true
+          this.emptyRecordForm()
+          this.valueToRecordForm(row)
+        } else {
+          this.$message.error(response.message)
+        }
+      })
     },
     submintRecord () {
       editRecordsInfo(this.recordForm).then((response) => {
         if (response.code === 200) {
           this.recordDialogVisible = false
+          this.$message.success('成功')
         } else {
           this.$message.error(response.message)
         }
@@ -340,7 +346,9 @@ export default {
       this.recordForm.registerNo = row.registerNo
       this.recordForm.patientNo = row.patientNo
       this.recordForm.patientName = row.patientName
-      this.recordForm.department = row.department
+      this.recordForm.department = row.registerDept
+      this.recordForm.doctor = this.$store.getters.username
+      this.recordForm.updater = this.$store.getters.jobNumber
     },
     emptyRecordForm () {
       this.recordForm.registerNo = ''
@@ -362,9 +370,19 @@ export default {
     },
     callNext () {
       var No = this.multiplySelection[0].waitingNo
-      var dept = this.multiplySelection[0].registerDepartment
-      var message = '请' + No + '号,前往,' + dept + ',第,' + this.deptNo + ',诊室就诊'
+      var dept = this.multiplySelection[0].registerDept
+      var message = '请' + No + '号,前往' + dept + ',第,' + this.deptNo + ',诊室就诊'
       voicePlay(message)
+    },
+    editBookingForm (row) {
+      row.updater = this.$store.getters.jobNumber
+      editBookingForm(row).then((response) => {
+        if (response.code === 200) {
+
+        } else {
+          this.$message.error(response.message)
+        }
+      })
     }
   }
 }
