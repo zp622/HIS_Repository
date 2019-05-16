@@ -6,7 +6,9 @@ const user = {
     username: '',
     jobNumber: '',
     token: getToken(),
-    roles: []
+    roles: '',
+    titleRank: '',
+    belongDept: ''
   },
   mutations: {
     SET_USERNAME: (state, username) => {
@@ -20,6 +22,12 @@ const user = {
     },
     SET_JOBNUMBER: (state, jobNumber) => {
       state.jobNumber = jobNumber
+    },
+    SET_TITLERANK: (state, titleRank) => {
+      state.titleRank = titleRank
+    },
+    SET_BELONGDEPT: (state, belongDept) => {
+      state.belongDept = belongDept
     }
   },
   actions: {
@@ -36,6 +44,14 @@ const user = {
             commit('SET_JOBNUMBER', result.jobNumber)
             if (result.role) { // 验证返回的role是否非空
               commit('SET_ROLES', result.role)
+              if (result.role === 'admin') {
+                console.log('管理员')
+              } else if (result.role === 'receptionist') {
+                console.log('前台')
+              } else {
+                commit('SET_TITLERANK', result.titleRank)
+                commit('SET_BELONGDEPT', result.belongDept)
+              }
             } else {
               console.log('返回中的用户角色为空')
             }

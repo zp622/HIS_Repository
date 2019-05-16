@@ -4,8 +4,8 @@ import {formatDateForBook} from '../utils'
 export const cardNoCheckPath = '/api/Patient/getAll'
 export const bookingFormPath = '/api/BookingForm/addBookForm'
 export const selectDoctorListPath = '/api/Member/getAll'
-export const queryBookFormDataPath = '/'
-export const queryResidualNumberPath = 'api/BookingForm/queryHasCount'
+export const queryBookFormDataPath = '/api/BookingForm/getBookingForm'
+export const queryResidualNumberPath = '/api/BookingForm/queryHasCount'
 
 /* 验证是否存在当前患者信息 否则需要注册 */
 export function cardNoCheck (formInfo) {
@@ -71,16 +71,24 @@ export function selectDoctorList (formInfo) {
 
 /* 查询挂号单信息 */
 export function queryBookFormData (queryForm, currentPage, pageSize) {
+  var obj = {}
   if (queryForm.date === '' || queryForm.date === undefined) {
 
+  } else if (queryForm.date.length === 10) {
+    obj.registerTime = queryForm.date + ' ' + queryForm.time
   } else {
-    queryForm.date = formatDateForBook(queryForm.date)
+    obj.registerTime = formatDateForBook(queryForm.date) + ' ' + queryForm.time
   }
+  obj.registerType = queryForm.bookType
+  obj.registerDept = queryForm.dept
+  obj.doctor = queryForm.doctor
+  obj.registerNo = queryForm.bookNo
+  obj.patientNo = queryForm.patientNo
   return request({
     url: queryBookFormDataPath,
     method: 'post',
     data: {
-      bookingForm: queryForm,
+      bookingForm: obj,
       currentPage: currentPage,
       pageSize: pageSize
     },

@@ -15,7 +15,7 @@
                background-color="transparent"
                @select="handleSelect">
         <div style="border:none;display: inline-block;line-height: 60px;color: white;font-size: 14px;float: left;margin: auto 15px;">
-        <span>{{this.$store.getters.username}}，欢迎您</span>
+        <span>{{this.$store.getters.username+' '+this.$store.getters.belongDept+this.$store.getters.titleRank}}，欢迎您</span>
         </div>
         <el-menu-item index="editPwd" style="color: white;">修改密码</el-menu-item>
         <el-menu-item index="logout" style="color: white;">退出登录</el-menu-item>
@@ -136,7 +136,6 @@ export default {
       if (value === '') {
         callback(new Error('请输入旧密码'))
       } else {
-        debugger
         checkOldPassword(this.$store.getters.jobNumber, this.updatePwdForm.oldPwd).then((response) => {
           if (response.code === 200) {
             callback()
