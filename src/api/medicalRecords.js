@@ -12,6 +12,8 @@ export function addRecordsInfo (formInfo) {
     data: {
       patientNo: formInfo.patientNo,
       registerNo: formInfo.bookNo,
+      patientName: formInfo.name,
+      department: formInfo.dept,
       creator: formInfo.creator
     },
     params: {}

@@ -5,17 +5,17 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="挂号单编号">
-            <el-input v-model="queryForm.registerNo"></el-input>
+            <el-input size="small" v-model="queryForm.registerNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者编号">
-            <el-input v-model="queryForm.patientNo"></el-input>
+            <el-input size="small" v-model="queryForm.patientNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者姓名">
-            <el-input v-model="queryForm.patientName"></el-input>
+            <el-input size="small" v-model="queryForm.patientName"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -42,7 +42,7 @@
     </div>
     <div style="display: inline-block;float: right;">
       <el-button type="success" size="small" @click="queryTableData">查询</el-button>
-      <el-button type="success" size="small" @click="editRecord">修改</el-button>
+      <el-button type="success" size="small" @click="editRecord" :disabled="multiplySelection.length===1?false:true">修改</el-button>
     </div>
     <div style="clear:both"></div>
   </div>
@@ -246,7 +246,7 @@ export default {
         if (response.code === 200) {
           this.recordDialogVisible = false
           this.$message.success('成功')
-          this.medicalRecordsData = response.data
+          this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
         } else {
           this.$message.error(response.message)
         }

@@ -271,6 +271,9 @@
           <el-form-item label="性别：">
             <span>{{dialogForm.sex}}</span>
           </el-form-item>
+          <el-form-item label="挂号科室：">
+            <span>{{dialogForm.dept}}</span>
+          </el-form-item>
           <el-form-item label="挂号类别：">
             <span>{{dialogForm.type}}</span>
           </el-form-item>
@@ -584,6 +587,7 @@ export default {
         serialNo: '',
         bookNo: '',
         patientNo: '',
+        dept: '',
         name: '',
         date: '',
         sex: '',
@@ -790,6 +794,7 @@ export default {
     },
     /* 生成的挂号单的赋值 */
     valueToDialogForm (result) {
+      this.dialogForm.dept = result.registerDept
       this.dialogForm.serialNo = result.waitingNo
       this.dialogForm.bookNo = result.registerNo
       this.dialogForm.patientNo = result.patientNo
