@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export const editRecordsInfoPath = '/'
+export const editRecordsInfoPath = '/api/MedicalRecord/updRecord'
 export const addRecordsInfoPath = '/api/MedicalRecord/addRecord'
 export const queryRecordsInfoPath = '/api/MedicalRecord/getRecord'
 
@@ -41,13 +41,13 @@ export function editRecordsInfo (formInfo) {
     url: editRecordsInfoPath,
     method: 'post',
     data: {
-      registerTime: formInfo.bookTime,
-      registerNo: formInfo.bookNo,
+      registerTime: formInfo.registerTime,
+      registerNo: formInfo.registerNo,
       patientNo: formInfo.patientNo,
       patientName: formInfo.patientName,
       hospital: formInfo.hospital,
       department: formInfo.department,
-      visit_time: formInfo.visitTime,
+      visitTime: formInfo.visitTime,
       doctor: formInfo.doctor,
       chiefAction: formInfo.chiefAction,
       presentIllness: formInfo.presentIllness,
@@ -55,8 +55,23 @@ export function editRecordsInfo (formInfo) {
       phyExam: formInfo.phyExam,
       tentDiag: formInfo.tentDiag,
       trpl: formInfo.trpl,
-      tuxiExam: formInfo.tuxiExam,
+      auxiExam: formInfo.auxiExam,
       updater: formInfo.updater
+    },
+    params: {}
+  })
+}
+
+/* 查询病历信息 病历信息管理 */
+export function manageQueryRecordsInfo (formInfo, currentPage, pageSize) {
+  var obj = {'patientNo': formInfo.patientNo, 'registerNo': formInfo.registerNo, 'patientName': formInfo.patientName}
+  return request({
+    url: queryRecordsInfoPath,
+    method: 'post',
+    data: {
+      'medicalRecord': obj,
+      'currentPage': currentPage,
+      'pageSize': pageSize
     },
     params: {}
   })

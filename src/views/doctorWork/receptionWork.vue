@@ -329,6 +329,7 @@ export default {
           this.valueToRecordForm(row)
         } else {
           this.$message.error(response.message)
+          this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
         }
       })
     },
@@ -374,7 +375,7 @@ export default {
       var message = '请' + No + '号,前往' + dept + ',第,' + this.deptNo + ',诊室就诊'
       voicePlay(message)
     },
-    editBookingForm (row) {
+    editBookInfo (row) {
       row.updater = this.$store.getters.jobNumber
       editBookingForm(row).then((response) => {
         if (response.code === 200) {

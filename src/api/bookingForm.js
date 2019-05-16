@@ -6,7 +6,7 @@ export const bookingFormPath = '/api/BookingForm/addBookForm'
 export const selectDoctorListPath = '/api/Member/getAll'
 export const queryBookFormDataPath = '/api/BookingForm/getBookingForm'
 export const queryResidualNumberPath = '/api/BookingForm/queryHasCount'
-export const editBookingFormPath = '/'
+export const editBookingFormPath = '/api/BookingForm/updBookingForm'
 
 /* 验证是否存在当前患者信息 否则需要注册 */
 export function cardNoCheck (formInfo) {
@@ -116,12 +116,13 @@ export function queryResidualNumber (formInfo) {
 
 /* 挂号信息的修改 */
 export function editBookingForm (formInfo) {
-  var obj = {'registerNo': formInfo.registerNo, 'status': formInfo.status, 'updater': formInfo.updater}
   return request({
     url: editBookingFormPath,
     method: 'post',
     data: {
-      bookingForm: obj
+      'registerNo': formInfo.registerNo,
+      'status': formInfo.status,
+      'updater': formInfo.updater
     },
     params: {}
   })
