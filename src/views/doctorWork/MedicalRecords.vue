@@ -5,17 +5,17 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="挂号单编号">
-            <el-input size="small" v-model="queryForm.registerNo"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.registerNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者编号">
-            <el-input size="small" v-model="queryForm.patientNo"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.patientNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者姓名">
-            <el-input size="small" v-model="queryForm.patientName"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.patientName"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -211,7 +211,8 @@ export default {
           label: '内科'
         }
       ],
-      multiplySelection: []
+      multiplySelection: [],
+      switchFlag: false
     }
   },
   created () {
@@ -219,6 +220,11 @@ export default {
   },
   methods: {
     queryTableData () {
+      if (this.switchFlag) {
+        this.currentPage = 1
+      } else {
+
+      }
       manageQueryRecordsInfo(this.queryForm, this.currentPage, this.pageSize).then((response) => {
         if (response.code === 200) {
           this.medicalRecordsData = response.data
@@ -227,6 +233,7 @@ export default {
           this.$message.error(response.message)
         }
       })
+      this.switchFlag = false
     },
     handleSizeChange (val) {
       this.pageSize = val
@@ -256,9 +263,18 @@ export default {
       this.recordForm.registerNo = row.registerNo
       this.recordForm.patientNo = row.patientNo
       this.recordForm.patientName = row.patientName
-      this.recordForm.department = row.registerDept
-      this.recordForm.doctor = this.$store.getters.username
+      this.recordForm.department = row.department
       this.recordForm.updater = this.$store.getters.jobNumber
+
+      this.recordForm.doctor = row.doctor
+      this.recordForm.visitTime = row.visitTime
+      this.recordForm.chiefAction = row.chiefAction
+      this.recordForm.presentIllness = row.presentIllness
+      this.recordForm.historyIllness = row.historyIllness
+      this.recordForm.phyExam = row.phyExam
+      this.recordForm.tentDiag = row.tentDiag
+      this.recordForm.trpl = row.trpl
+      this.recordForm.auxiExam = row.auxiExam
     },
     emptyRecordForm () {
       this.recordForm.registerNo = ''
@@ -277,6 +293,9 @@ export default {
     },
     handleSelectionChange (rows) {
       this.multiplySelection = rows
+    },
+    switchPage () {
+      this.switchFlag = true
     }
   }
 }

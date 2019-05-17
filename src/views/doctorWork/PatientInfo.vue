@@ -5,7 +5,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="证件类型">
-            <el-select size="small" v-model="queryForm.cardType" style="width: 100%">
+            <el-select @change="switchPage" size="small" v-model="queryForm.cardType" style="width: 100%">
               <el-option
                 v-for="item in cardTypes"
                 :label="item.label"
@@ -17,24 +17,24 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="证件号码">
-            <el-input size="small" v-model="queryForm.cardNo"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.cardNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者编号">
-            <el-input size="small" v-model="queryForm.patientNo"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.patientNo"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="姓名">
-            <el-input size="small" v-model="queryForm.name"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.name"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="电话">
-            <el-input size="small" v-model="queryForm.phone"></el-input>
+            <el-input @change="switchPage" size="small" v-model="queryForm.phone"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -257,7 +257,8 @@ export default {
           {required: true, message: '请输入活动名称', trigger: 'blur'},
           {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
         ]
-      }
+      },
+      switchFlag: false
     }
   },
   created () {
@@ -265,6 +266,11 @@ export default {
   },
   methods: {
     queryTableData () {
+      if (this.switchFlag) {
+        this.currentPage = 1
+      } else {
+
+      }
       queryPatientInfo(this.queryForm, this.currentPage, this.pageSize).then((response) => {
         if (response.code === 200) {
           this.patientData = response.data
@@ -273,6 +279,7 @@ export default {
           this.$message.error(response.message)
         }
       })
+      this.switchFlag = false
     },
     handleSizeChange (val) {
       this.pageSize = val
@@ -325,6 +332,9 @@ export default {
       for (let key in obj) {
         obj[key] = ''
       }
+    },
+    switchPage () {
+      this.switchFlag = true
     }
   }
 }

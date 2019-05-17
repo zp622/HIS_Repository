@@ -5,7 +5,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="科室名称">
-            <el-select size="small" v-model="queryForm.deptName" style="width: 100%">
+            <el-select @change="switchPage" size="small" v-model="queryForm.deptName" style="width: 100%">
               <el-option
                 v-for="item in deptNames"
                 :label="item.label"
@@ -17,7 +17,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="楼层">
-            <el-select size="small" v-model="queryForm.floor" style="width: 100%">
+            <el-select @change="switchPage" size="small" v-model="queryForm.floor" style="width: 100%">
               <el-option
                 v-for="item in floors"
                 :label="item.label"
@@ -125,7 +125,8 @@ export default {
       currentPage: 1,
       multiplySelection: [],
       pageSize: 10,
-      total: 10
+      total: 10,
+      switchFlag: false
     }
   },
   created () {
@@ -133,6 +134,11 @@ export default {
   },
   methods: {
     queryTableData () {
+      if (this.switchFlag) {
+        this.currentPage = 1
+      } else {
+
+      }
       queryDeptInfo(this.queryForm, this.currentPage, this.pageSize).then((response) => {
         if (response.code === 200) {
           this.deptData = response.data
@@ -141,6 +147,7 @@ export default {
           this.$message.error(response.message)
         }
       })
+      this.switchFlag = false
     },
     handleSizeChange (val) {
       this.pageSize = val
@@ -152,6 +159,9 @@ export default {
     },
     handleSelectionChange (rows) {
       this.multiplySelection = rows
+    },
+    switchPage () {
+      this.switchFlag = true
     }
   }
 }
