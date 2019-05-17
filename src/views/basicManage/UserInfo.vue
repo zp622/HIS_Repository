@@ -5,17 +5,17 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="职工号">
-            <el-input v-model="queryForm.jobNumber"></el-input>
+            <el-input @change="switchPage" v-model="queryForm.jobNumber"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="姓名">
-            <el-input v-model="queryForm.name"></el-input>
+            <el-input @change="switchPage" v-model="queryForm.name"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="角色">
-            <el-select v-model="queryForm.role" style="width: 100%">
+            <el-select @change="switchPage" v-model="queryForm.role" style="width: 100%">
               <el-option
                 v-for="item in roles"
                 :label="item.label"
@@ -34,14 +34,14 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="100"
+        :page-sizes="[5, 10, 20, 30]"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
     </div>
     <div style="display: inline-block;float: right;">
-      <el-button type="success" size="small">查询</el-button>
+      <el-button type="success" size="small" @click="queryTableData">查询</el-button>
       <el-button type="success" size="small">新增</el-button>
       <el-button type="success" size="small">修改</el-button>
       <el-button type="success" size="small">删除</el-button>
@@ -49,21 +49,24 @@
     <div style="clear:both"></div>
   </div>
   <div>
-    <el-table :data="userData" height="250" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange" :data="userData" height="250" border style="width: 100%">
+      <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column type="index" width="35"></el-table-column>
-      <el-table-column prop="JOB_NUMBER" label="职工号" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="NAME" label="姓名" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="TITLE_RANK" label="角色" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="NATION" label="登录密码" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="BIRTHDAY" label="用户状态" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="CAREER_EXPERIENCE" label="英文姓名" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="ADDREDD" label="登录标志" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="jobNumber" label="职工号" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="name" label="姓名" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="role" label="角色" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="password" label="登录密码" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="userStatus" label="用户状态" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="nameEn" label="英文姓名" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="loginFlag" label="登录标志" min-width="60" align="center"></el-table-column>
     </el-table>
   </div>
 </div>
 </template>
 
 <script>
+import {queryUserInfo} from '../../api/userInfo'
+
 export default {
   name: 'UserInfo',
   data () {
@@ -75,30 +78,59 @@ export default {
       },
       roles: [
         {
-          value: '前台',
-          label: '前台'
+          label: '前台',
+          value: 'reception'
         },
         {
-          value: '医生',
-          label: '医生'
+          label: '医生',
+          value: 'doctor'
         },
         {
-          value: '管理员',
-          label: '管理员'
+          label: '管理员',
+          value: 'admin'
         }
       ],
       userData: [],
-      currentPage: 1
+      currentPage: 1,
+      pageSize: 10,
+      total: 10,
+      multiplySelection: [],
+      switchFlag: false
     }
   },
   created () {
+    this.queryTableData()
   },
   methods: {
+    queryTableData () {
+      if (this.switchFlag) {
+        this.currentPage = 1
+      } else {
+
+      }
+      queryUserInfo(this.queryForm, this.currentPage, this.pageSize).then((response) => {
+        if (response.code === 200) {
+          this.userData = response.data
+          this.total = response.total
+        } else {
+          this.$message.error(response.message)
+        }
+      })
+      this.switchFlag = false
+    },
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.queryTableData()
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.currentPage = val
+      this.queryTableData()
+    },
+    handleSelectionChange (rows) {
+      this.multiplySelection = rows
+    },
+    switchPage () {
+      this.switchFlag = true
     }
   }
 }
