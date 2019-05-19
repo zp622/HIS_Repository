@@ -5,6 +5,12 @@ export function voicePlay (text) {
   window.speechSynthesis.speak(speechSU)
 }
 
+/* 校验邮箱 */
+export function validateEmail (str) {
+  var email = /^\w+@[a-zA-Z0-9]{2,10}(?:\.[a-z]{2,4}){1,3}$/
+  return email.test(str)
+}
+
 /* 校验手机号码 */
 export function validateMobile (str) {
   var mobile = /^1[3|5|8|7]\d{9}$/

@@ -82,12 +82,12 @@
       </el-table>
     </div>
 
-    <el-dialog :close-on-click-modal=false width="80%" :visible.sync="dialogVisible" :title="dialogTitle">
-      <el-form :model="memberForm" label-width="130px">
+    <el-dialog @close="closeForm" :close-on-click-modal=false width="80%" :visible.sync="dialogVisible" :title="dialogTitle">
+      <el-form :model="memberForm" label-width="130px" ref="memberForm" :rules="rules">
         <el-row>
           <el-col :span="8">
             <el-form-item prop="id" label="身份证号">
-              <el-input v-model="memberForm.id"></el-input>
+              <el-input v-model="memberForm.id" oninput = "value=value.replace(/[^\w]/ig,'')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -149,7 +149,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item prop="phone" label="手机号">
-              <el-input v-model="memberForm.phone"></el-input>
+              <el-input v-model="memberForm.phone" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -179,7 +179,7 @@
       </el-form>
       <div slot="footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="closeForm">取 消</el-button>
+        <el-button @click="dialogVisible=false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -187,11 +187,44 @@
 
 <script>
 import {queryEmployeeInfo, addEmployeeInfo, editEmployeeInfo} from '../../api/employeeU'
-import {formatterToDate} from '../../utils'
+import {formatterToDate, validatePhone, validateMobile, validateIDcard, validateEmail} from '../../utils'
 
 export default {
   name: 'EmployeeInfo',
   data () {
+    const phoneValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else {
+        if (validateMobile(value) || validatePhone(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确的手机号或座机号'))
+        }
+      }
+    }
+    const idValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else {
+        if (validateIDcard(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确的身份证号'))
+        }
+      }
+    }
+    const emailValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else {
+        if (validateEmail(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确邮箱'))
+        }
+      }
+    }
     return {
       queryForm: {
         jobNumber: '',
@@ -243,6 +276,26 @@ export default {
         workDate: '',
         degree: '',
         belongDept: ''
+      },
+      rules: {
+        belongDept: [
+          { required: true, message: '必填', trigger: 'change' }
+        ],
+        phone: [
+          {validator: phoneValidate, trigger: 'blur'}
+        ],
+        id: [
+          {validator: idValidate, trigger: 'blur'}
+        ],
+        email: [
+          {validator: emailValidate, trigger: 'blur'}
+        ],
+        name: [
+          {required: true, message: '必填', trigger: 'blur'}
+        ],
+        titleRank: [
+          { required: true, message: '必填', trigger: 'change' }
+        ]
       },
       dialogVisible: false,
       dialogTitle: '',
@@ -313,30 +366,35 @@ export default {
       this.updater = this.$store.getters.jobNumber
     },
     submitForm (type) {
-      if (this.operationType === 'add') {
-        this.memberForm.jobNumber = 'm' + Date.now().toString()
-        this.memberForm.creator = this.$store.getters.jobNumber
-        addEmployeeInfo(this.memberForm).then((response) => {
-          if (response.code === 200) {
-            this.$message.success('新增成功')
-            this.currentPage = 1
-            this.queryTableData()
-            this.dialogVisible = false
+      this.$refs['memberForm'].validate((valid) => {
+        if (valid) {
+          if (this.operationType === 'add') {
+            this.memberForm.jobNumber = 'm' + Date.now().toString()
+            this.memberForm.creator = this.$store.getters.jobNumber
+            addEmployeeInfo(this.memberForm).then((response) => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                this.queryTableData()
+                this.dialogVisible = false
+              } else {
+                this.$message.error('新增失败')
+              }
+            })
           } else {
-            this.$message.error('新增失败')
+            editEmployeeInfo(this.memberForm).then((response) => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                this.queryTableData()
+                this.dialogVisible = false
+              } else {
+                this.$message.error('修改失败')
+              }
+            })
           }
-        })
-      } else {
-        editEmployeeInfo(this.memberForm).then((response) => {
-          if (response.code === 200) {
-            this.$message.success('修改成功')
-            this.queryTableData()
-            this.dialogVisible = false
-          } else {
-            this.$message.error('修改失败')
-          }
-        })
-      }
+        } else {
+          return false
+        }
+      })
     },
     closeForm () {
       this.emptyForm(this.memberForm)

@@ -17,7 +17,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="楼层">
-            <el-select @change="switchPage" size="small" v-model="queryForm.floor" style="width: 100%">
+            <el-select @change="switchPage" v-model="queryForm.floor" style="width: 100%">
               <el-option
                 v-for="item in floors"
                 :label="item.label"
@@ -72,8 +72,8 @@
     </el-table>
   </div>
 
-  <el-dialog :close="closeForm" :close-on-click-modal=false width="80%" :visible.sync="dialogVisible" :title="dialogTitle">
-    <el-form :model="deptForm" label-width="130px">
+  <el-dialog @close="closeForm" :close-on-click-modal=false width="80%" :visible.sync="dialogVisible" :title="dialogTitle">
+    <el-form ref="deptForm" :rules="rules" :model="deptForm" label-width="130px">
       <el-row>
         <el-col :span="8">
           <el-form-item prop="deptName" label="科室名称">
@@ -94,7 +94,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item prop="phone" label="科室电话">
-            <el-input v-model="deptForm.phone"></el-input>
+            <el-input v-model="deptForm.phone" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -111,7 +111,7 @@
     </el-form>
     <div slot="footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
-      <el-button @click="closeForm">取 消</el-button>
+      <el-button @click="dialogVisible=false">取 消</el-button>
     </div>
   </el-dialog>
 </div>
@@ -119,10 +119,22 @@
 
 <script>
 import {queryDeptInfo, addDeptInfo, editDeptInfo, delDeptInfo} from '../../api/department'
+import {validateMobile, validatePhone} from '../../utils'
 
 export default {
   name: 'DepartmentInfo',
   data () {
+    const phoneValidate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('必填'))
+      } else {
+        if (validateMobile(value) || validatePhone(value)) {
+          callback()
+        } else {
+          callback(new Error('请输入正确的手机号或座机号'))
+        }
+      }
+    }
     return {
       queryForm: {
         deptName: '',
@@ -189,6 +201,20 @@ export default {
         introduction: '',
         members: ''
       },
+      rules: {
+        deptName: [
+          {required: true, message: '必填', trigger: 'blur'}
+        ],
+        address: [
+          {required: true, message: '必填', trigger: 'blur'}
+        ],
+        manager: [
+          {required: true, message: '必填', trigger: 'blur'}
+        ],
+        phone: [
+          {validator: phoneValidate, trigger: 'blur'}
+        ]
+      },
       operationType: 'add'
     }
   },
@@ -249,7 +275,7 @@ export default {
     },
     closeForm () {
       this.emptyForm(this.deptForm)
-      // this.$refs['deptForm'].resetFields()
+      this.$refs['deptForm'].resetFields()
       this.dialogVisible = false
     },
     /* 初始化清空表单数据 */
@@ -259,29 +285,35 @@ export default {
       }
     },
     submitForm (type) {
-      if (this.operationType === 'add') {
-        this.deptForm.deptNo = 'd' + Date.now().toString()
-        this.deptForm.creator = this.$store.getters.jobNumber
-        addDeptInfo(this.deptForm).then((response) => {
-          if (response.code === 200) {
-            this.$message.success('新增成功')
-            this.queryTableData()
-            this.dialogVisible = false
+      this.$refs['deptForm'].validate((valid) => {
+        if (valid) {
+          if (this.operationType === 'add') {
+            this.deptForm.deptNo = 'd' + Date.now().toString()
+            this.deptForm.creator = this.$store.getters.jobNumber
+            addDeptInfo(this.deptForm).then((response) => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                this.queryTableData()
+                this.dialogVisible = false
+              } else {
+                this.$message.error('新增失败')
+              }
+            })
           } else {
-            this.$message.error('新增失败')
+            editDeptInfo(this.deptForm).then((response) => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                this.queryTableData()
+                this.dialogVisible = false
+              } else {
+                this.$message.error('修改失败')
+              }
+            })
           }
-        })
-      } else {
-        editDeptInfo(this.deptForm).then((response) => {
-          if (response.code === 200) {
-            this.$message.success('修改成功')
-            this.queryTableData()
-            this.dialogVisible = false
-          } else {
-            this.$message.error('修改失败')
-          }
-        })
-      }
+        } else {
+          return false
+        }
+      })
     },
     deleteConfirm () {
       delDeptInfo(this.multiplySelection).then((response) => {
