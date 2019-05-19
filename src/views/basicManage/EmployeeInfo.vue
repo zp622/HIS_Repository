@@ -31,10 +31,10 @@
             <el-form-item label="科室">
               <el-select @change="switchPage" v-model="queryForm.dept" style="width: 100%">
                 <el-option v-for="item in depts"
-                           :label="item.label"
-                           :value="item.value"
+                           :label="item.deptName"
+                           :value="item.deptName"
                            :disabled="item.disabled"
-                           :key="item.value"></el-option>
+                           :key="item.deptNo"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -168,9 +168,9 @@
             <el-form-item prop="belongDept" label="所属科室">
               <el-select style="width: 100%" v-model="memberForm.belongDept">
                 <el-option v-for="item in depts"
-                           :value="item.value"
-                           :label="item.label"
-                           :key="item.value"
+                           :value="item.deptName"
+                           :label="item.deptName"
+                           :key="item.deptNo"
                            :disabled="item.disabled"></el-option>
               </el-select>
             </el-form-item>
@@ -188,6 +188,7 @@
 <script>
 import {queryEmployeeInfo, addEmployeeInfo, editEmployeeInfo} from '../../api/employeeU'
 import {formatterToDate, validatePhone, validateMobile, validateIDcard, validateEmail} from '../../utils'
+import {queryDeptInfo} from '../../api/department'
 
 export default {
   name: 'EmployeeInfo',
@@ -305,6 +306,13 @@ export default {
   },
   created () {
     this.queryTableData()
+    queryDeptInfo(this.queryForm, 1, 1000000).then((response) => {
+      if (response.code === 200) {
+        this.depts = response.data
+      } else {
+        this.$message.error('下拉框数据获取失败')
+      }
+    })
   },
   methods: {
     queryTableData () {

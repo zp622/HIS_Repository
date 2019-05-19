@@ -168,7 +168,7 @@
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="挂号时间" class="label" required>
                   <el-col :span="11">
-                    <el-date-picker class="formInput" type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
+                    <el-date-picker :clearable=false :picker-options="pickerOptions1" class="formInput" type="date" v-model="form.bookDate" style="width: 100%;"></el-date-picker>
                   </el-col>
                   <el-col class="line" :span="2">-</el-col>
                   <el-col :span="11">
@@ -326,7 +326,7 @@
               </el-col>
               <el-col :span="12" style="padding-right: 10%;padding-left: 2%">
                 <el-form-item label="出生日期" class="label" prop="birthday">
-                  <el-date-picker class="formInput" v-model="registerForm.birthday" type="date" style="width: 100%;"></el-date-picker>
+                  <el-date-picker :clearable=false class="formInput" v-model="registerForm.birthday" type="date" style="width: 100%;"></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -493,6 +493,12 @@ export default {
       }
     }
     return {
+      pickerOptions1: {
+        disabledDate (time) {
+          var curDate = new Date()
+          return time.getTime() <= new Date(curDate.getTime() - 24 * 60 * 60 * 1000)
+        }
+      },
       showPage: 1,
       deptVoiceMessage: '请选择就诊科室',
       infoVoiceMessage: '请填写挂号信息',

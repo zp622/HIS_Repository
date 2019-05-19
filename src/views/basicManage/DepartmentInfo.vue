@@ -5,13 +5,13 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="科室名称">
-            <el-select @change="switchPage" size="small" v-model="queryForm.deptName" style="width: 100%">
+            <el-select @change="switchPage" v-model="queryForm.deptName" style="width: 100%">
               <el-option
                 v-for="item in deptNames"
-                :label="item.label"
-                :value="item.value"
+                :label="item.deptName"
+                :value="item.deptName"
                 :disabled="item.disabled"
-                :key="item.value"></el-option>
+                :key="item.deptNo"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -220,6 +220,13 @@ export default {
   },
   created () {
     this.queryTableData()
+    queryDeptInfo(this.queryForm, 1, 1000000).then((response) => {
+      if (response.code === 200) {
+        this.deptNames = response.data
+      } else {
+        this.$message.error('下拉框数据获取失败')
+      }
+    })
   },
   methods: {
     queryTableData () {

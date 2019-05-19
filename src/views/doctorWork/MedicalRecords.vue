@@ -5,17 +5,17 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="挂号单编号">
-            <el-input @change="switchPage" size="small" v-model="queryForm.registerNo"></el-input>
+            <el-input @change="switchPage" v-model="queryForm.registerNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者编号">
-            <el-input @change="switchPage" size="small" v-model="queryForm.patientNo"></el-input>
+            <el-input @change="switchPage" v-model="queryForm.patientNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="患者姓名">
-            <el-input @change="switchPage" size="small" v-model="queryForm.patientName"></el-input>
+            <el-input @change="switchPage" v-model="queryForm.patientName"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,73 +90,73 @@
           <el-row>
             <el-col :span="8">
               <el-form-item prop="visitTime" label="就诊时间">
-                <el-date-picker style="width: 100%" size="small" v-model="recordForm.visitTime" type="datetime">
+                <el-date-picker style="width: 100%" v-model="recordForm.visitTime" type="datetime">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="department" label="就诊科室">
-                <el-select style="width: 100%" size="small" v-model="recordForm.department">
+                <el-select style="width: 100%" v-model="recordForm.department">
                   <el-option v-for="item in depts"
-                             :value="item.value"
-                             :label="item.label"
-                             :key="item.value"
+                             :value="item.deptName"
+                             :label="item.deptName"
+                             :key="item.deptNo"
                              :disabled="item.disabled"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="doctor" label="接诊医生">
-                <el-input size="small" v-model="recordForm.doctor"></el-input>
+                <el-input v-model="recordForm.doctor"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="chiefAction" label="主诉">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.chiefAction"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.chiefAction"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="presentIllness" label="症状">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.presentIllness"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.presentIllness"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="historyIllness" label="既往史">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.historyIllness"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.historyIllness"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="phyExam" label="体检">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.phyExam"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.phyExam"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="tentDiag" label="初步诊断">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.tentDiag"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.tentDiag"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="trpl" label="治疗意见">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.trpl"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.trpl"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="auxiExam" label="辅助检查结果">
-                <el-input style="width: 100%" size="small" type="textarea" v-model="recordForm.auxiExam"></el-input>
+                <el-input style="width: 100%" type="textarea" v-model="recordForm.auxiExam"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -175,6 +175,7 @@
 
 <script>
 import {manageQueryRecordsInfo, editRecordsInfo} from '../../api/medicalRecords'
+import {queryDeptInfo} from '../../api/department'
 
 export default {
   name: 'MedicalRecords',
@@ -217,6 +218,13 @@ export default {
   },
   created () {
     this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
+    queryDeptInfo(this.queryForm, 1, 1000000).then((response) => {
+      if (response.code === 200) {
+        this.depts = response.data
+      } else {
+        this.$message.error('下拉框数据获取失败')
+      }
+    })
   },
   methods: {
     queryTableData () {

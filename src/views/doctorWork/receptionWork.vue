@@ -6,7 +6,7 @@
         <el-col :span="8">
           <el-form-item label="时间" label-width="60px">
             <el-col :span="11">
-              <el-date-picker @change="switchPage" size="small" type="date" v-model="queryForm.date" style="width: 100%;"></el-date-picker>
+              <el-date-picker :clearable=false @change="switchPage" size="small" type="date" v-model="queryForm.date" style="width: 100%;"></el-date-picker>
             </el-col>
             <el-col class="line" :span="2">-</el-col>
             <el-col :span="11">
@@ -106,7 +106,7 @@
         <el-row>
         <el-col :span="8">
           <el-form-item prop="visitTime" label="就诊时间">
-            <el-date-picker style="width: 100%" size="small" v-model="recordForm.visitTime" type="datetime">
+            <el-date-picker :clearable=false style="width: 100%" size="small" v-model="recordForm.visitTime" type="datetime">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -114,9 +114,9 @@
           <el-form-item prop="department" label="就诊科室">
             <el-select style="width: 100%" size="small" v-model="recordForm.department">
               <el-option v-for="item in depts"
-                :value="item.value"
-                :label="item.label"
-                :key="item.value"
+                :value="item.deptName"
+                :label="item.deptName"
+                :key="item.deptNo"
               :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
@@ -192,6 +192,7 @@
 import {queryBookFormData, editBookingForm} from '../../api/bookingForm'
 import {voicePlay} from '../../utils'
 import {editRecordsInfo, queryRecordsInfo} from '../../api/medicalRecords'
+import {queryDeptInfo} from '../../api/department'
 
 export default {
   name: 'DoctorWork',
@@ -288,6 +289,13 @@ export default {
 
     }
     this.queryTableData(this.queryForm, this.currentPage, this.pageSize)
+    queryDeptInfo(this.queryForm, 1, 1000000).then((response) => {
+      if (response.code === 200) {
+        this.depts = response.data
+      } else {
+        this.$message.error('下拉框数据获取失败')
+      }
+    })
   },
   methods: {
     createdDate (strArray) {
