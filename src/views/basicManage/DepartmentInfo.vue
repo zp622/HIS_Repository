@@ -51,7 +51,7 @@
       <el-popover ref="popover" placement="top" width="160" v-model="popoverVisible">
         <p style="display: inline-block;margin: 5px 0px;">确定删除选中的数据吗？</p>
         <div style="text-align: right;">
-          <el-button type="primary" size="mini" @click="popoverVisible = false">确定</el-button>
+          <el-button type="primary" size="mini" @click="deleteConfirm">确定</el-button>
           <el-button size="mini" type="text" @click="popoverVisible = false">取消</el-button>
         </div>
       </el-popover>
@@ -72,7 +72,7 @@
     </el-table>
   </div>
 
-  <el-dialog :close-on-click-modal=false width="80%" :visible.sync="dialogVisible" :title="dialogTitle">
+  <el-dialog :close="closeForm" :close-on-click-modal=false width="80%" :visible.sync="dialogVisible" :title="dialogTitle">
     <el-form :model="deptForm" label-width="130px">
       <el-row>
         <el-col :span="8">
@@ -108,17 +108,17 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <div slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
-      </div>
     </el-form>
+    <div slot="footer">
+      <el-button type="primary" @click="submitForm">确 定</el-button>
+      <el-button @click="closeForm">取 消</el-button>
+    </div>
   </el-dialog>
 </div>
 </template>
 
 <script>
-import {queryDeptInfo} from '../../api/department'
+import {queryDeptInfo, addDeptInfo, editDeptInfo, delDeptInfo} from '../../api/department'
 
 export default {
   name: 'DepartmentInfo',
@@ -188,7 +188,8 @@ export default {
         phone: '',
         introduction: '',
         members: ''
-      }
+      },
+      operationType: 'add'
     }
   },
   created () {
@@ -227,11 +228,71 @@ export default {
     },
     openDialog (type) {
       if (type === 'add') {
-
+        this.operationType = 'add'
+        this.dialogTitle = '科室信息新增'
       } else {
-
+        this.operationType = 'edit'
+        this.dialogTitle = '科室信息修改'
+        this.valueToForm(this.multiplySelection[0])
       }
       this.dialogVisible = true
+    },
+    valueToForm (row) {
+      this.deptForm.address = row.address
+      this.deptForm.deptName = row.deptName
+      this.deptForm.manager = row.manager
+      this.deptForm.phone = row.phone
+      this.deptForm.introduction = row.introduction
+      this.deptForm.members = row.members
+      this.updater = this.$store.getters.jobNumber
+      this.deptForm.deptNo = row.deptNo
+    },
+    closeForm () {
+      this.emptyForm(this.deptForm)
+      // this.$refs['deptForm'].resetFields()
+      this.dialogVisible = false
+    },
+    /* 初始化清空表单数据 */
+    emptyForm (obj) {
+      for (let key in obj) {
+        obj[key] = ''
+      }
+    },
+    submitForm (type) {
+      if (this.operationType === 'add') {
+        this.deptForm.deptNo = 'd' + Date.now().toString()
+        this.deptForm.creator = this.$store.getters.jobNumber
+        addDeptInfo(this.deptForm).then((response) => {
+          if (response.code === 200) {
+            this.$message.success('新增成功')
+            this.queryTableData()
+            this.dialogVisible = false
+          } else {
+            this.$message.error('新增失败')
+          }
+        })
+      } else {
+        editDeptInfo(this.deptForm).then((response) => {
+          if (response.code === 200) {
+            this.$message.success('修改成功')
+            this.queryTableData()
+            this.dialogVisible = false
+          } else {
+            this.$message.error('修改失败')
+          }
+        })
+      }
+    },
+    deleteConfirm () {
+      delDeptInfo(this.multiplySelection).then((response) => {
+        if (response.code === 200) {
+          this.$message.success('删除成功')
+          this.queryTableData()
+          this.popoverVisible = false
+        } else {
+          this.$message.error(response.message)
+        }
+      })
     }
   }
 }
