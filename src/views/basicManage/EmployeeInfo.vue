@@ -1,21 +1,21 @@
 <template>
   <div id="employeeInfo">
     <div>
-      <el-form size="small" ref="queryForm" :model="queryForm" label-width="100px">
+      <el-form ref="queryForm" :model="queryForm" label-width="100px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="职工号">
-             <el-input @change="switchPage" size="small" v-model="queryForm.jobNumber"></el-input>
+             <el-input @change="switchPage" v-model="queryForm.jobNumber"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="姓名">
-              <el-input @change="switchPage" size="small" v-model="queryForm.name"></el-input>
+              <el-input @change="switchPage" v-model="queryForm.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="职位">
-              <el-select @change="switchPage" size="small" v-model="queryForm.titleRank" style="width: 100%">
+              <el-select @change="switchPage" v-model="queryForm.titleRank" style="width: 100%">
                 <el-option
                   v-for="item in titleRanks"
                   :label="item.label"
@@ -29,7 +29,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="科室">
-              <el-select size="small" @change="switchPage" v-model="queryForm.dept" style="width: 100%">
+              <el-select @change="switchPage" v-model="queryForm.dept" style="width: 100%">
                 <el-option v-for="item in depts"
                            :label="item.label"
                            :value="item.value"
@@ -57,15 +57,6 @@
         <el-button type="success" size="small" @click="queryTableData">查询</el-button>
         <el-button type="success" size="small" @click="openDialog('add')">新增</el-button>
         <el-button type="success" size="small" :disabled="multiplySelection.length===1?false:true" @click="openDialog('edit')">修改</el-button>
-        <el-button type="success" size="small" v-popover:popover :disabled="multiplySelection.length>0?false:true">删除</el-button>
-
-        <el-popover ref="popover" placement="top" width="160" v-model="popoverVisible">
-          <p style="display: inline-block;margin: 5px 0px;">确定删除选中的数据吗？</p>
-          <div style="text-align: right;">
-            <el-button type="primary" size="mini" @click="popoverVisible = false">确定</el-button>
-            <el-button size="mini" type="text" @click="popoverVisible = false">取消</el-button>
-          </div>
-        </el-popover>
       </div>
       <div style="clear:both"></div>
     </div>
@@ -78,14 +69,14 @@
         <el-table-column prop="name" label="姓名" min-width="60" align="center"></el-table-column>
         <el-table-column prop="sex" label="性别" min-width="60" align="center"></el-table-column>
         <el-table-column prop="famous" label="名族" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="birthday" label="出生日期" min-width="60" align="center"></el-table-column>
+        <el-table-column prop="birthday" label="出生日期" :formatter="formatter1" min-width="60" align="center"></el-table-column>
         <el-table-column prop="titleRank" label="职称等级" min-width="60" align="center"></el-table-column>
         <el-table-column prop="belongDept" label="所属科室" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="careerExperince" label="从业经历" min-width="60" align="center"></el-table-column>
+        <el-table-column prop="careerExperience" label="从业经历" min-width="60" align="center"></el-table-column>
         <el-table-column prop="address" label="现住地址" min-width="60" align="center"></el-table-column>
         <el-table-column prop="email" label="邮箱" min-width="60" align="center"></el-table-column>
         <el-table-column prop="phone" label="电话" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="workDate" label="工作日期" min-width="60" align="center"></el-table-column>
+        <el-table-column prop="workDate" label="工作日期" :formatter="formatter2" min-width="60" align="center"></el-table-column>
         <!--<el-table-column prop="workTerm" label="从业年限" min-width="60" align="center"></el-table-column>-->
         <el-table-column prop="degree" label="学历" min-width="60" align="center"></el-table-column>
       </el-table>
@@ -175,7 +166,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item prop="belongDept" label="所属科室">
-              <el-select style="width: 100%" size="small" v-model="memberForm.belongDept">
+              <el-select style="width: 100%" v-model="memberForm.belongDept">
                 <el-option v-for="item in depts"
                            :value="item.value"
                            :label="item.label"
@@ -195,7 +186,8 @@
 </template>
 
 <script>
-import {queryEmployeeInfo, addEmployeeInfo} from '../../api/employeeU'
+import {queryEmployeeInfo, addEmployeeInfo, editEmployeeInfo} from '../../api/employeeU'
+import {formatterToDate} from '../../utils'
 
 export default {
   name: 'EmployeeInfo',
@@ -299,8 +291,26 @@ export default {
       } else {
         this.operationType = 'edit'
         this.dialogTitle = '员工信息修改'
+        this.valueToForm(this.multiplySelection[0])
       }
       this.dialogVisible = true
+    },
+    valueToForm (row) {
+      this.memberForm.id = row.id
+      this.memberForm.name = row.name
+      this.memberForm.sex = row.sex
+      this.memberForm.famous = row.famous
+      this.memberForm.birthday = formatterToDate(row.birthday)
+      this.memberForm.titleRank = row.titleRank
+      this.memberForm.careerExperience = row.careerExperience
+      this.memberForm.address = row.address
+      this.memberForm.email = row.email
+      this.memberForm.phone = row.phone
+      this.memberForm.workDate = formatterToDate(row.workDate)
+      this.memberForm.degree = row.degree
+      this.memberForm.belongDept = row.belongDept
+      this.memberForm.jobNumber = row.jobNumber
+      this.updater = this.$store.getters.jobNumber
     },
     submitForm (type) {
       if (this.operationType === 'add') {
@@ -311,16 +321,40 @@ export default {
             this.$message.success('新增成功')
             this.currentPage = 1
             this.queryTableData()
+            this.dialogVisible = false
           } else {
             this.$message.error('新增失败')
           }
         })
       } else {
-
+        editEmployeeInfo(this.memberForm).then((response) => {
+          if (response.code === 200) {
+            this.$message.success('修改成功')
+            this.queryTableData()
+            this.dialogVisible = false
+          } else {
+            this.$message.error('修改失败')
+          }
+        })
       }
     },
     closeForm () {
-
+      this.emptyForm(this.memberForm)
+      this.$refs['memberForm'].resetFields()
+      this.dialogVisible = false
+    },
+    /* 初始化清空表单数据 */
+    emptyForm (obj) {
+      for (let key in obj) {
+        obj[key] = ''
+      }
+    },
+    formatter1 (row, column, cellValue) {
+      // var str = new Date(formatterToDate(cellValue).replace(/-/g, '/'))
+      return formatterToDate(cellValue)
+    },
+    formatter2 (row, column, cellValue) {
+      return formatterToDate(cellValue)
     }
   }
 }

@@ -42,14 +42,14 @@
     </div>
     <div style="display: inline-block;float: right;">
       <el-button type="success" size="small" @click="queryTableData">查询</el-button>
-      <el-button type="success" size="small" @click="openDialog('add')">新增</el-button>
-      <el-button type="success" size="small" :disabled="multiplySelection.length===1?false:true" @click="openDialog('edit')">修改</el-button>
+      <!--<el-button type="success" size="small" @click="openDialog('add')">新增</el-button>-->
+      <!--<el-button type="success" size="small" :disabled="multiplySelection.length===1?false:true" @click="openDialog('edit')">修改</el-button>-->
       <el-button type="success" size="small" v-popover:popover :disabled="multiplySelection.length>0?false:true">删除</el-button>
 
       <el-popover ref="popover" placement="top" width="160" v-model="popoverVisible">
         <p style="display: inline-block;margin: 5px 0px;">确定删除选中的数据吗？</p>
         <div style="text-align: right;">
-          <el-button type="primary" size="mini" @click="popoverVisible = false">确定</el-button>
+          <el-button type="primary" size="mini" @click="deleteConfirm">确定</el-button>
           <el-button size="mini" type="text" @click="popoverVisible = false">取消</el-button>
         </div>
       </el-popover>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import {queryUserInfo} from '../../api/userInfo'
+import {queryUserInfo, delUserInfo} from '../../api/userInfo'
 
 export default {
   name: 'UserInfo',
@@ -185,6 +185,17 @@ export default {
 
       }
       this.dialogVisible = true
+    },
+    deleteConfirm () {
+      delUserInfo(this.multiplySelection).then((response) => {
+        if (response.code === 200) {
+          this.$message.success('删除成功')
+          this.queryTableData()
+          this.popoverVisible = false
+        } else {
+          this.$message.error(response.message)
+        }
+      })
     }
   }
 }

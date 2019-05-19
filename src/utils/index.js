@@ -79,3 +79,12 @@ export function formatDate (date) {
   var formatDate = year + month + strDate
   return formatDate
 }
+
+/* 20180908→2018-09-08 */
+export function formatterToDate (strDate) {
+  var seperator = '-'
+  var year = strDate.substring(0, 4)
+  var month = strDate.substring(4, 6)
+  var day = strDate.substring(6, 8)
+  return year + seperator + month + seperator + day
+}
