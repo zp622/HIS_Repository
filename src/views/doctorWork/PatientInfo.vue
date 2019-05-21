@@ -59,7 +59,7 @@
     <div style="clear:both"></div>
   </div>
   <div>
-    <el-table @selection-change="handleSelectionChange" :data="patientData" height="250" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange" :data="patientData" :height="tableHeight" border style="width: 100%">
       <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column type="index" width="35"></el-table-column>
       <el-table-column prop="cardType" label="证件类型" min-width="60" align="center"></el-table-column>
@@ -259,6 +259,11 @@ export default {
         ]
       },
       switchFlag: false
+    }
+  },
+  computed: {
+    tableHeight () {
+      return (window.innerHeight - 330)
     }
   },
   created () {

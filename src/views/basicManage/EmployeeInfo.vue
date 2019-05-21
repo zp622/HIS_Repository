@@ -61,22 +61,22 @@
       <div style="clear:both"></div>
     </div>
     <div>
-      <el-table @selection-change="handleSelectionChange" :data="employeeData" height="250" border style="width: 100%">
+      <el-table @selection-change="handleSelectionChange" :data="employeeData" :height="tableHeight" border style="width: 100%">
         <el-table-column type="selection" width="30"></el-table-column>
         <el-table-column type="index" width="35"></el-table-column>
-        <el-table-column prop="jobNumber" label="职工号" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="id" label="身份证号" min-width="60" align="center"></el-table-column>
+        <el-table-column prop="jobNumber" label="职工号" min-width="80" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip=true prop="id" label="身份证号" min-width="80" align="center"></el-table-column>
         <el-table-column prop="name" label="姓名" min-width="60" align="center"></el-table-column>
         <el-table-column prop="sex" label="性别" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="famous" label="名族" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="birthday" label="出生日期" :formatter="formatter1" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="titleRank" label="职称等级" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="belongDept" label="所属科室" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="careerExperience" label="从业经历" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="address" label="现住地址" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="email" label="邮箱" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="phone" label="电话" min-width="60" align="center"></el-table-column>
-        <el-table-column prop="workDate" label="工作日期" :formatter="formatter2" min-width="60" align="center"></el-table-column>
+        <el-table-column prop="famous" label="民族" min-width="60" align="center"></el-table-column>
+        <el-table-column prop="birthday" label="出生日期" :formatter="formatter1" min-width="80" align="center"></el-table-column>
+        <el-table-column prop="titleRank" label="职称等级" min-width="80" align="center"></el-table-column>
+        <el-table-column prop="belongDept" label="所属科室" min-width="80" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip=true prop="careerExperience" label="从业经历" min-width="80" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip=true prop="address" label="现住地址" min-width="80" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip=true prop="email" label="邮箱" min-width="80" align="center"></el-table-column>
+        <el-table-column prop="phone" label="电话" min-width="80" align="center"></el-table-column>
+        <el-table-column prop="workDate" label="工作日期" :formatter="formatter2" min-width="80" align="center"></el-table-column>
         <!--<el-table-column prop="workTerm" label="从业年限" min-width="60" align="center"></el-table-column>-->
         <el-table-column prop="degree" label="学历" min-width="60" align="center"></el-table-column>
       </el-table>
@@ -302,6 +302,11 @@ export default {
       dialogTitle: '',
       popoverVisible: false,
       operationType: 'add'
+    }
+  },
+  computed: {
+    tableHeight () {
+      return (window.innerHeight - 330)
     }
   },
   created () {

@@ -47,23 +47,23 @@
     <div style="clear:both"></div>
   </div>
   <div>
-    <el-table @selection-change="handleSelectionChange" :data="medicalRecordsData" height="250" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange" :data="medicalRecordsData" :height="tableHeight" border style="width: 100%">
       <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column type="index" width="35"></el-table-column>
-      <el-table-column prop="registerNo" label="挂号单编号" min-width="100" align="center"></el-table-column>
-      <el-table-column prop="patientNo" label="患者编号" min-width="100" align="center"></el-table-column>
-      <el-table-column prop="patientName" label="患者姓名" min-width="100" align="center"></el-table-column>
-      <el-table-column prop="department" label="就诊科室" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="chiefAction" label="主诉" min-width="100" align="center"></el-table-column>
-      <el-table-column prop="presentIllness" label="现病史" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="historyIllness" label="既往史" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="phyExam" label="体检" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="tentDiag" label="初步诊断" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="trpl" label="治疗意见" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="visitTime" label="就诊时间" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="doctor" label="接诊医生" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="auxiExam" label="辅助检查结果" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="hospital" label="就诊医院" min-width="100" align="center"></el-table-column>
+      <el-table-column prop="registerNo" label="挂号单编号" min-width="120" align="center"></el-table-column>
+      <el-table-column prop="patientNo" label="患者编号" min-width="130" align="center"></el-table-column>
+      <el-table-column prop="patientName" label="患者姓名" min-width="80" align="center"></el-table-column>
+      <el-table-column prop="department" label="就诊科室" min-width="80" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="chiefAction" label="主诉" min-width="130" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="presentIllness" label="现病史" min-width="130" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="historyIllness" label="既往史" min-width="130" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="phyExam" label="体检" min-width="130" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="tentDiag" label="初步诊断" min-width="130" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="trpl" label="治疗意见" min-width="130" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="visitTime" label="就诊时间" min-width="130" align="center"></el-table-column>
+      <el-table-column prop="doctor" label="接诊医生" min-width="80" align="center"></el-table-column>
+      <el-table-column :show-overflow-tooltip=true prop="auxiExam" label="辅助检查结果" min-width="130" align="center"></el-table-column>
+      <!--<el-table-column prop="hospital" label="就诊医院" min-width="100" align="center"></el-table-column>-->
     </el-table>
   </div>
   <div>
@@ -120,7 +120,7 @@
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item prop="presentIllness" label="症状">
+              <el-form-item prop="presentIllness" label="现病史">
                 <el-input style="width: 100%" type="textarea" v-model="recordForm.presentIllness"></el-input>
               </el-form-item>
             </el-col>
@@ -214,6 +214,11 @@ export default {
       ],
       multiplySelection: [],
       switchFlag: false
+    }
+  },
+  computed: {
+    tableHeight () {
+      return (window.innerHeight - 260)
     }
   },
   created () {

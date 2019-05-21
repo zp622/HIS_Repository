@@ -58,7 +58,7 @@
     <div style="clear:both"></div>
   </div>
   <div>
-    <el-table @selection-change="handleSelectionChange" :data="bookFormData" height="250" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange" :data="bookFormData" :height="tableHeight" border style="width: 100%">
       <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column type="index" width="35"></el-table-column>
       <el-table-column prop="registerNo" label="挂号单编号" min-width="60" align="center"></el-table-column>
@@ -265,6 +265,11 @@ export default {
         }
       ],
       switchFlag: false
+    }
+  },
+  computed: {
+    tableHeight () {
+      return (window.innerHeight - 235)
     }
   },
   created () {

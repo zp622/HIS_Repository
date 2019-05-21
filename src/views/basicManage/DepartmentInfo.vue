@@ -59,16 +59,16 @@
     <div style="clear:both"></div>
   </div>
   <div>
-    <el-table @selection-change="handleSelectionChange" :data="deptData" height="250" border style="width: 100%">
+    <el-table @selection-change="handleSelectionChange" :data="deptData" :height="tableHeight" border style="width: 100%">
       <el-table-column type="selection" width="30"></el-table-column>
       <el-table-column type="index" width="35"></el-table-column>
       <el-table-column prop="deptNo" label="科室编号" min-width="60" align="center"></el-table-column>
       <el-table-column prop="deptName" label="科室名称" min-width="60" align="center"></el-table-column>
       <el-table-column prop="address" label="科室位置" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="manager" label="科室负责人" min-width="30" align="center"></el-table-column>
-      <el-table-column prop="phone" label="负责人电话" min-width="30" align="center"></el-table-column>
-      <el-table-column prop="members" label="科室人员组成" min-width="60" align="center"></el-table-column>
-      <el-table-column prop="introduction" label="科室介绍" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="manager" label="科室负责人" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="phone" label="负责人电话" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="members" label="科室人员组成" min-width="100" align="center"></el-table-column>
+      <el-table-column prop="introduction" label="科室介绍" min-width="150" align="center"></el-table-column>
     </el-table>
   </div>
 
@@ -216,6 +216,11 @@ export default {
         ]
       },
       operationType: 'add'
+    }
+  },
+  computed: {
+    tableHeight () {
+      return (window.innerHeight - 260)
     }
   },
   created () {

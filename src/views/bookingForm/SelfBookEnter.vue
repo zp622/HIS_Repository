@@ -252,7 +252,7 @@
 
     <div id="dia">
       <el-dialog :show-close=false :close-on-press-escape=false :close-on-click-modal=false top="0vh" title="挂号单信息" :visible.sync="dialogFormVisible">
-        <el-form :model="dialogForm"  label-width="180px">
+        <el-form :model="dialogForm"  label-width="270px">
           <el-form-item label="挂号单编号：">
             <span>{{dialogForm.bookNo}}</span>
           </el-form-item>
