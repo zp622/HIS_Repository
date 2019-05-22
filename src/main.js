@@ -27,6 +27,17 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 
 Vue.use(ElementUI)
 
+/* 区分关闭和刷新，关闭退出登录 start */
+/* window.onload = function () {
+  alert('onload')
+}
+window.onunload = function () {
+  alert('onunload')
+}
+window.onbeforeunload = function () {
+  alert('onbeforeunload')
+} */
+
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   if (to.path === '/login') {
@@ -53,3 +64,7 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+window.onunload = function () {
+  alert('关闭')
+}

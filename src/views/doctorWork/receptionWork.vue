@@ -189,8 +189,8 @@
 </template>
 
 <script>
-import {queryBookFormData, editBookingForm} from '../../api/bookingForm'
-import {voicePlay} from '../../utils'
+import {queryBookFormData, editBookingForm, postVoiceMessage} from '../../api/bookingForm'
+// import {voicePlay} from '../../utils'
 import {editRecordsInfo, queryRecordsInfo} from '../../api/medicalRecords'
 import {queryDeptInfo} from '../../api/department'
 
@@ -269,7 +269,7 @@ export default {
   },
   computed: {
     tableHeight () {
-      return (window.innerHeight - 235)
+      return (window.innerHeight - 260)
     }
   },
   created () {
@@ -401,8 +401,15 @@ export default {
     callNext () {
       var No = this.multiplySelection[0].waitingNo
       var dept = this.multiplySelection[0].registerDept
-      var message = '请' + No + '号,前往' + dept + ',第,' + this.deptNo + ',诊室就诊'
-      voicePlay(message)
+      var message = '请' + No + '号,前往' + dept + '第' + this.deptNo + '诊室就诊'
+      postVoiceMessage(message).then((response) => {
+        if (response.code === 200) {
+          console.log(message)
+        } else {
+          this.$message.error(response.message)
+        }
+      })
+      // voicePlay(message)
     },
     editBookInfo (row) {
       row.updater = this.$store.getters.jobNumber

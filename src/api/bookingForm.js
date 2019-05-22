@@ -7,6 +7,7 @@ export const selectDoctorListPath = '/api/Member/getAll'
 export const queryBookFormDataPath = '/api/BookingForm/getBookingForm'
 export const queryResidualNumberPath = '/api/BookingForm/queryHasCount'
 export const editBookingFormPath = '/api/BookingForm/updBookingForm'
+export const postVoiceMessagePath = '/api/BookingForm/ttsFun'
 
 /* 验证是否存在当前患者信息 否则需要注册 */
 export function cardNoCheck (formInfo) {
@@ -123,6 +124,18 @@ export function editBookingForm (formInfo) {
       'registerNo': formInfo.registerNo,
       'status': formInfo.status,
       'updater': formInfo.updater
+    },
+    params: {}
+  })
+}
+
+/* 调用后台语音提示 */
+export function postVoiceMessage (msg) {
+  return request({
+    url: postVoiceMessagePath,
+    method: 'post',
+    data: {
+      voiceMessage: msg
     },
     params: {}
   })
