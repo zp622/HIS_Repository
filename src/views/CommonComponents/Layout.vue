@@ -421,7 +421,6 @@ export default {
       return JSON.stringify(arr).indexOf(JSON.stringify(obj))// -1表示不存在
     },
     rightClick (event) {
-      debugger
       console.log(event)
     }
   }
@@ -484,5 +483,9 @@ export default {
   }
   #layout .el-menu--horizontal > .el-menu-item.is-active{
     background-color: #c8e4d857!important;
+  }
+  .el-aside{
+    height: 100%;
+    overflow-x: hidden;
   }
 </style>
