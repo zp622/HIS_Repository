@@ -33,16 +33,16 @@
             <el-submenu :index="item.index" v-if="item.children && item.role.indexOf(userRole)!==-1" :key="item.index">
               <template slot="title">
                 <i :class="item.icon"></i>
-                <span>{{item.name}}</span>
+                <span>{{item.label}}</span>
               </template>
               <el-menu-item v-for="item2 in item.children" v-if="item2.role.indexOf(userRole)!==-1" :index="item2.index" :key="item2.index">
                 <i :class="item2.icon"></i>
-                <span slot="title">{{item2.name}}</span>
+                <span slot="title">{{item2.label}}</span>
               </el-menu-item>
             </el-submenu>
             <el-menu-item :index="item.index" v-else-if="item.role.indexOf(userRole)!==-1" :key="item.index">
               <i :class="item.icon"></i>
-              <span slot="title">{{item.name}}</span>
+              <span slot="title">{{item.label}}</span>
             </el-menu-item>
             <div v-else :key="item.index"></div>
           </template>
@@ -64,7 +64,7 @@
             :closable="tag.index==='homePage'?false:true"
             :disable-transitions="true"
             @close="handleCloseTag(tag)">
-            {{tag.name}}
+            {{tag.label}}
           </el-tag>
           <div style="float: right;line-height: 24px">
             <el-dropdown>
@@ -88,7 +88,7 @@
                                 :command="[item.parentIndex,item.index]"
                                 :key="item.index"
                                 @click="menuSelect(item.index, [item.parentIndex,item.index])">
-                <router-link :to="item.index" style="text-decoration: none">{{item.name}}</router-link>
+                <router-link :to="item.index" style="text-decoration: none">{{item.label}}</router-link>
               </el-dropdown-item>
             </el-dropdown-menu>
             </el-dropdown>
@@ -96,7 +96,7 @@
           <div style="clear: both;"></div>
         </div>
         <transition name="fade" mode="out-in">
-          <keep-alive>
+          <keep-alive :include="keepAliveIncludes">
             <router-view/>
           </keep-alive>
         </transition>
@@ -191,7 +191,8 @@ export default {
       activeIndexHidden: '',
       hiddenTags: [
         {
-          name: '首页',
+          label: '首页',
+          name: 'HomePage',
           index: 'homePage',
           tagType: 'success',
           parentIndex: ''
@@ -204,41 +205,47 @@ export default {
       secondBreadcrumb: '',
       dynamicTags: [
         {
-          name: '首页',
+          label: '首页',
           index: 'homePage',
+          name: 'HomePage',
           parentIndex: ''
         }
       ],
       menuData: [
         {
           icon: 'fa fa-id-badge',
-          name: '主页',
+          label: '主页',
+          name: 'HomePage',
           index: 'homePage',
           role: ['admin', 'doctor', 'receptionist']
         },
         {
           icon: 'fa fa-id-badge',
-          name: '基础信息管理',
+          label: '基础信息管理',
+          name: 'BasicManage',
           index: 'basicManage',
           role: ['admin'],
           children: [
             {
               icon: 'fas fa-user-circle fa-fw',
-              name: '用户管理',
+              label: '用户管理',
+              name: 'UserInfo',
               index: 'userInfo',
               parentIndex: 'basicManage',
               role: ['admin']
             },
             {
               icon: 'fas fa-user-circle fa-fw',
-              name: '员工信息',
+              label: '员工信息',
+              name: 'EmployeeInfo',
               index: 'employeeInfo',
               parentIndex: 'basicManage',
               role: ['admin']
             },
             {
               icon: 'fas fa-user-circle fa-fw',
-              name: '科室信息',
+              label: '科室信息',
+              name: 'DepartmentInfo',
               index: 'departmentInfo',
               parentIndex: 'basicManage',
               role: ['admin']
@@ -247,41 +254,52 @@ export default {
         },
         {
           icon: 'fa fa-id-badge',
-          name: '挂号管理',
+          label: '挂号管理',
+          name: 'BookingForm',
           index: 'bookingForm',
           role: ['admin', 'receptionist']
         },
         {
           icon: 'fa fa-id-badge',
-          name: '医生工作台',
+          label: '医生工作台',
+          name: 'doctorWork',
           index: 'doctorWork',
           role: ['admin', 'doctor'],
           children: [
             {
               icon: 'fa fa-id-badge',
-              name: '接诊工作台',
+              label: '接诊工作台',
+              name: 'DoctorWork',
               index: 'receptionWork',
+              parentIndex: 'doctorWork',
               role: ['admin', 'doctor']
             },
             {
               icon: 'fa fa-id-badge',
-              name: '患者信息',
+              label: '患者信息',
+              name: 'PatientInfo',
               index: 'patientInfo',
+              parentIndex: 'doctorWork',
               role: ['admin', 'doctor']
             },
             {
               icon: 'fa fa-id-badge',
-              name: '病历查询',
+              label: '病历查询',
+              name: 'MedicalRecords',
+              parentIndex: 'doctorWork',
               index: 'medicalRecords',
               role: ['admin', 'doctor']
             }
           ]
         }
-      ]
+      ],
+      keepAliveIncludes: []
     }
   },
   created () {
     this.userRole = this.$store.getters.roles
+    debugger
+    this.keepAliveIncludes.push('HomePage')
   },
   methods: {
     /* 修改用户密码 完成后重新登录 */
@@ -335,7 +353,10 @@ export default {
       return index
     },
     handleCloseTag (tag) {
+      debugger
       var index = this.getArrIndex(this.dynamicTags, tag)
+      var aliveIndex = this.keepAliveIncludes.indexOf(tag.name)
+      this.keepAliveIncludes.splice(aliveIndex, 1)
       this.dynamicTags.splice(index, 1)
       if (tag.index !== this.currentTagIndex) {
         return
@@ -389,28 +410,34 @@ export default {
         // 一级菜单
         if (obj.index === index && !obj.children) {
           // 面包屑塞值
-          this.firstBreadcrumb = obj.name
+          this.firstBreadcrumb = obj.label
           this.secondBreadcrumb = ''
           if (this.arrExistObj(this.dynamicTags, obj) !== -1) { // 存在
             return
           }
           // tag塞值
           this.dynamicTags.push(obj)
+          // keepAlive
+          debugger
+          this.keepAliveIncludes.push(obj.name)
         } else {
           // 二级菜单
           var pathFirstLevel = indexPath[0]
           var pathSecondLevel = indexPath[1] // 等于index
           if (obj.index === pathFirstLevel && obj.children) {
             // 面包屑塞值
-            this.firstBreadcrumb = obj.name
+            this.firstBreadcrumb = obj.label
             for (var j = 0; j < obj.children.length; j++) {
               if (obj.children[j].index === pathSecondLevel) {
-                this.secondBreadcrumb = obj.children[j].name
+                this.secondBreadcrumb = obj.children[j].label
                 if (this.arrExistObj(this.dynamicTags, obj.children[j]) !== -1) { // 存在
                   return
                 }
                 // tag塞值
                 this.dynamicTags.push(obj.children[j])
+                // keepAlive
+                debugger
+                this.keepAliveIncludes.push(obj.children[j].name)
               }
             }
           }
