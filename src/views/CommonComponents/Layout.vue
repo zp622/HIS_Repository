@@ -298,7 +298,6 @@ export default {
   },
   created () {
     this.userRole = this.$store.getters.roles
-    debugger
     this.keepAliveIncludes.push('HomePage')
   },
   methods: {
@@ -353,7 +352,6 @@ export default {
       return index
     },
     handleCloseTag (tag) {
-      debugger
       var index = this.getArrIndex(this.dynamicTags, tag)
       var aliveIndex = this.keepAliveIncludes.indexOf(tag.name)
       this.keepAliveIncludes.splice(aliveIndex, 1)
@@ -418,7 +416,6 @@ export default {
           // tag塞值
           this.dynamicTags.push(obj)
           // keepAlive
-          debugger
           this.keepAliveIncludes.push(obj.name)
         } else {
           // 二级菜单
@@ -436,7 +433,6 @@ export default {
                 // tag塞值
                 this.dynamicTags.push(obj.children[j])
                 // keepAlive
-                debugger
                 this.keepAliveIncludes.push(obj.children[j].name)
               }
             }

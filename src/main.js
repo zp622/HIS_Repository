@@ -12,6 +12,7 @@ import axios from 'axios'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+// import {logout} from './api/login'
 
 Vue.config.productionTip = false
 
@@ -26,6 +27,59 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 // axios.defaults.withCredentials = true // axios 默认不发送cookie，需要全局设置true发送cookie
 
 Vue.use(ElementUI)
+
+/* window.addEventListener('onload', function (event) {
+  /!* event = event || window.event
+  // 兼容IE8和Firefox 4之前的版本
+  if (event) {
+    logout(this.$store.getters.jobNumber).then((response) => {
+      if (response.code === 200) {
+        this.$router.push({path: '/login'})
+      } else {
+        this.$message.error(response.message)
+      }
+    })
+    event.returnValue = '关闭提示'
+  } *!/
+  // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+  if (confirm('?')) {
+    lo()
+  }
+  return lo()
+})
+function lo () {
+  logout(this.$store.getters.jobNumber).then((response) => {
+    if (response.code === 200) {
+      this.$router.push({path: '/login'})
+    } else {
+      this.$message.error(response.message)
+    }
+  })
+} */
+
+/*
+window.addEventListener('onunload', function (event) {
+  logout(this.$store.getters.jobNumber).then((response) => {
+    if (response.code === 200) {
+      this.$router.push({path: '/login'})
+    } else {
+      this.$message.error(response.message)
+    }
+  })
+})
+
+window.addEventListener('beforeunload', function (event) {
+  event.returnValue = function () {
+    logout(this.$store.getters.jobNumber).then((response) => {
+      if (response.code === 200) {
+        this.$router.push({path: '/login'})
+      } else {
+        this.$message.error(response.message)
+      }
+    })
+  }
+})
+*/
 
 /* 区分关闭和刷新，关闭退出登录 start */
 /* window.onload = function () {

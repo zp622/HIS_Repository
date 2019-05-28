@@ -42,6 +42,9 @@ const user = {
             var result = response.data[0]
             commit('SET_USERNAME', result.name)
             commit('SET_JOBNUMBER', result.jobNumber)
+            // sessionStorage.setItem('username', result.name)
+            // sessionStorage.setItem('jobNumber', result.jobNumber)
+            // sessionStorage.setItem('password', userInfo.password)
             if (result.role) { // 验证返回的role是否非空
               commit('SET_ROLES', result.role)
               if (result.role === 'admin') {

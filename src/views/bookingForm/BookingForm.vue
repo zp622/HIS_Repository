@@ -44,7 +44,7 @@ export default {
   #bookingForm{
     height: 89%;
     width: 100%;
-    background: url("../../../static/img/welcome.jpg")  no-repeat center center;
+    background: url("../../../static/img/book-bgi.jpg")  no-repeat center center;
     background-size: 100% 100%;
     border-bottom: 1px solid #EBEEF5;
     border-right: 1px solid #EBEEF5;
