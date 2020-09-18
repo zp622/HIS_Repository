@@ -4,6 +4,7 @@
     <el-form ref="queryForm" :model="queryForm" label-width="100px">
       <el-row>
         <el-col :span="8">
+          
           <el-form-item label="科室名称">
             <el-select @change="switchPage" v-model="queryForm.deptName" style="width: 100%">
               <el-option
